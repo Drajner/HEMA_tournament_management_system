@@ -8,6 +8,7 @@ public class Fight {
     private int secondCompetitorScore;
     private int doubles;
     private FightStatus status;
+    private Competitor winner;
 
     public Fight(Competitor firstCompetitor, Competitor secondCompetitor){
         this.firstCompetitor = firstCompetitor;
@@ -16,15 +17,17 @@ public class Fight {
         this.secondCompetitorScore = 0;
         this.doubles = 0;
         this.status = FightStatus.PENDING;
+        this.winner = null;
     }
 
-    public Fight(Competitor firstCompetitor, Competitor secondCompetitor, int firstCompetitorScore, int secondCompetitorScore, int doubles, FightStatus status){
+    public Fight(Competitor firstCompetitor, Competitor secondCompetitor, int firstCompetitorScore, int secondCompetitorScore, int doubles, FightStatus status, Competitor winner){
         this.firstCompetitor = firstCompetitor;
         this.secondCompetitor = secondCompetitor;
         this.firstCompetitorScore = firstCompetitorScore;
         this.secondCompetitorScore = secondCompetitorScore;
         this.doubles = doubles;
         this.status = status;
+        this.winner = winner;
     }
 
     public Competitor getFirstCompetitor() {
@@ -51,6 +54,10 @@ public class Fight {
         return status;
     }
 
+    public Competitor getWinner() {
+        return winner;
+    }
+
     public void setFirstCompetitor(Competitor firstCompetitor) {
         this.firstCompetitor = firstCompetitor;
     }
@@ -73,5 +80,9 @@ public class Fight {
 
     public void setDoubles(int doubles) {
         this.doubles = doubles;
+    }
+
+    public void setWinner(Competitor winner) {
+        this.winner = winner;
     }
 }

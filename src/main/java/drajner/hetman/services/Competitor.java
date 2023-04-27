@@ -5,23 +5,17 @@ public class Competitor {
     private String name;
     private String surname;
     private String teamName;
-    private CompetitorStatus status;
-    private float score;
 
     public Competitor(String name, String surname){
         this.name = name;
         this.surname = surname;
         this.teamName = "None";
-        this.status = CompetitorStatus.COMPETING;
-        this.score = 0;
     }
 
-    public Competitor(String name, String surname, String teamName, CompetitorStatus status, float score){
+    public Competitor(String name, String surname, String teamName){
         this.name = name;
         this.surname = surname;
         this.teamName = teamName;
-        this.status = status;
-        this.score = score;
     }
 
     public String getName() {
@@ -36,14 +30,6 @@ public class Competitor {
         return teamName;
     }
 
-    public CompetitorStatus getStatus() {
-        return status;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -56,11 +42,4 @@ public class Competitor {
         this.teamName = teamName;
     }
 
-    public void setStatus(CompetitorStatus status) {
-        this.status = status;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
 }

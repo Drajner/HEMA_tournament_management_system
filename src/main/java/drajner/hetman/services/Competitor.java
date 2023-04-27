@@ -5,8 +5,8 @@ public class Competitor {
     private String name;
     private String surname;
     private String teamName;
-    CompetitorStatus status;
-    int score;
+    private CompetitorStatus status;
+    private float score;
 
     public Competitor(String name, String surname){
         this.name = name;
@@ -16,7 +16,7 @@ public class Competitor {
         this.score = 0;
     }
 
-    public Competitor(String name, String surname, String teamName, CompetitorStatus status, int score){
+    public Competitor(String name, String surname, String teamName, CompetitorStatus status, float score){
         this.name = name;
         this.surname = surname;
         this.teamName = teamName;
@@ -40,7 +40,7 @@ public class Competitor {
         return status;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
     }
 

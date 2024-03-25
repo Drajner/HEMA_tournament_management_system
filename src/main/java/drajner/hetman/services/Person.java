@@ -1,18 +1,18 @@
 package drajner.hetman.services;
 
-public class Competitor {
+public class Person {
 
     private String name;
     private String surname;
     private String teamName;
 
-    public Competitor(String name, String surname){
+    public Person(String name, String surname){
         this.name = name;
         this.surname = surname;
         this.teamName = "None";
     }
 
-    public Competitor(String name, String surname, String teamName){
+    public Person(String name, String surname, String teamName){
         this.name = name;
         this.surname = surname;
         this.teamName = teamName;

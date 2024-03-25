@@ -1,17 +1,24 @@
 package drajner.hetman.services;
 
-import java.util.ArrayList;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+@Log4j2
 public class Tournament {
 
     private String name;
-    private ArrayList<Competitor> competitors;
+    private ArrayList<TournamentParticipant> participants;
     private ArrayList<Group> groups;
 
     public Tournament(String name){
         this.name = name;
-        this.competitors = new ArrayList<Competitor>();
-        this.groups = new ArrayList<Group>();
+        this.participants = new ArrayList<>();
+        this.groups = new ArrayList<>();
+        log.debug(String.format("Created tournament: %s", name));
     }
 
     public String getName() {
@@ -22,20 +29,58 @@ public class Tournament {
         this.name = name;
     }
 
-    public ArrayList<Competitor> getCompetitors() {
-        return competitors;
+    public ArrayList<TournamentParticipant> getParticipants() {
+        return participants;
     }
 
     public ArrayList<Group> getGroups() {
         return groups;
     }
 
-    public void addCompetitor(Competitor newCompetitor){
-        competitors.add(newCompetitor);
+    public void addParticipant(TournamentParticipant newParticipant){
+        participants.add(newParticipant);
+        log.debug(String.format("Added '%s' to '%s' tournament.", newParticipant.getName(), name));
+    }
+
+    public void addParticipant(Person person){
+        TournamentParticipant newParticipant = new TournamentParticipant(person);
+        participants.add(newParticipant);
+        log.debug(String.format("Added '%s' to '%s' tournament.", newParticipant.getName(), name));
+    }
+
+    public void sortParticipants(){
+        Collections.sort(participants, Comparator
+                .comparing(TournamentParticipant::getWins)
+                .thenComparing(TournamentParticipant::getScore)
+                .thenComparing(Comparator.comparingDouble(TournamentParticipant::getDoubles).reversed())
+                .thenComparing(Comparator.comparingDouble(TournamentParticipant::getCards).reversed()));
+        log.debug(String.format("%s is sorted.", name));
     }
 
 
+    public ArrayList<TournamentParticipant> getGroupWinners(int ladderSize){
+        if(ladderSize > participants.size()){
+            System.out.println("Ladder to big");
+        }
+        sortParticipants();
 
+        ArrayList<TournamentParticipant> groupWinners = new ArrayList<>();
+        for(int i=0; i<ladderSize;i++){
+            groupWinners.add(participants.get(i));
+        }
+        return groupWinners;
+    }
+
+    public void createLadder(int size){
+        ArrayList<TournamentParticipant> groupWinners = getGroupWinners(size);
+        GroupFinals ladder = new GroupFinals(groupWinners);
+        groups.add(new GroupFinals(groupWinners));
+        log.debug("Created finals group.");
+    }
+
+    public void createGroups(int numberOfGroups){
+
+    }
 
 
 }

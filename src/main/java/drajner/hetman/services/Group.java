@@ -3,19 +3,29 @@ package drajner.hetman.services;
 import java.util.ArrayList;
 
 public abstract class Group {
-    private ArrayList<Competitor> competitors;
-    private ArrayList<Fight> fights;
+    protected ArrayList<TournamentParticipant> groupParticipants;
+    protected ArrayList<Fight> fights;
 
-    void addCompetitor(Competitor competitor){
-        this.competitors.add(competitor);
+    public Group(){
+        groupParticipants = new ArrayList<>();
+        fights = new ArrayList<>();
+    }
+
+    public Group(ArrayList<TournamentParticipant> groupParticipants){
+        this.groupParticipants = groupParticipants;
+        this.fights = new ArrayList<>();
+    }
+
+    void addCompetitor(TournamentParticipant competitor){
+        this.groupParticipants.add(competitor);
     }
 
     void addFight(Fight fight){
         this.fights.add(fight);
     }
 
-    abstract ArrayList<Competitor> evaluateGroup();
+    abstract void evaluateGroup(float modifier);
 
-
+    abstract void autoGenerateFights();
 
 }

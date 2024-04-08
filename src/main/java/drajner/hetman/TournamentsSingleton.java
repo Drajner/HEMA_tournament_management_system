@@ -27,4 +27,16 @@ public class TournamentsSingleton {
             return instance;
         }
     }
+
+    public void add(Tournament tournament){
+        getInstance().tournaments.add(tournament);
+    }
+
+    public void remove(int tournamentPos){
+        getInstance().tournaments.remove(tournamentPos);
+    }
+
+    public void replace(int tournamentPos, Tournament tournament){
+        getInstance().tournaments.set(tournamentPos, tournament);
+    }
 }

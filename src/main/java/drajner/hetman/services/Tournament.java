@@ -80,6 +80,11 @@ public class Tournament {
 
     public void createGroups(int numberOfGroups){
 
+        ArrayList<Group> newGroups = new ArrayList<>();
+        for(int i=0;i<numberOfGroups;i++){
+            newGroups.add(new GroupPool());
+        }
+        for()
     }
 
 

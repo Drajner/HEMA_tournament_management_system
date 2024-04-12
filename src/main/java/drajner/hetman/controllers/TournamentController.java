@@ -15,11 +15,11 @@ import java.util.ArrayList;
 public class TournamentController {
 
     @GetMapping("/get")
-    public Tournament getTournament(@PathVariable int number){
-        return TournamentsSingleton.get(number);
+    public Tournament getTournament(@PathVariable int tournamentNumber){
+        return TournamentsSingleton.get(tournamentNumber);
     }
 
-    @GetMapping("/participants/get")
+    @GetMapping("/participants")
     public ArrayList<TournamentParticipant> getTournamentParticipants(@PathVariable int tournamentNumber){
         return TournamentsSingleton.get(tournamentNumber).getParticipants();
     }
@@ -31,28 +31,38 @@ public class TournamentController {
 
     @DeleteMapping("participants/delete/{number}")
     public void deleteParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getParticipants().remove(number);
+        TournamentsSingleton.get(tournamentNumber).removeParticipant(number);
     }
 
-    @GetMapping("/groups/get")
+    @PostMapping("/participants/replace/{number}")
+    public void addTournamentParticipant(@RequestBody TournamentParticipant participant, @PathVariable int tournamentNumber, @PathVariable int number){
+        TournamentsSingleton.get(tournamentNumber).replaceParticipant(number, participant);
+    }
+
+    @GetMapping("/groups")
     public ArrayList<TournamentParticipant> getGroups(@PathVariable int tournamentNumber){
         return TournamentsSingleton.get(tournamentNumber).getParticipants();
     }
 
     @PostMapping("/groups/add/ladder")
-    public void addLadderGroup(@RequestBody Person person, @PathVariable int tournamentNumber){
+    public void addLadderGroup(@PathVariable int tournamentNumber){
         TournamentsSingleton.get(tournamentNumber).addGroupLadder();
     }
 
     @PostMapping("/groups/add/pool")
     public void addPoolGroup(@RequestBody Person person, @PathVariable int tournamentNumber){
         TournamentsSingleton.get(tournamentNumber).addGroupPool();
-
     }
 
     @DeleteMapping("groups/delete/{number}")
     public void deleteGroup(@PathVariable int tournamentNumber, @PathVariable int number){
         TournamentsSingleton.get(tournamentNumber).getGroups().remove(number);
+    }
+
+    @PostMapping("/rename")
+    public void changeName(@RequestBody String string, @PathVariable int tournamentNumber){
+        TournamentsSingleton.get(tournamentNumber).setName(string);
+
     }
 
 }

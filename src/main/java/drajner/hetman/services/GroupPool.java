@@ -6,7 +6,7 @@ public class GroupPool extends Group{
 
     private int fightsPerCompetitor;
 
-    void evaluateGroup(float modifier){
+    public void evaluateGroup(float modifier){
         for(Fight fight: fights){
             if(fight.getStatus() == FightStatus.FINISHED){
                 fight.evaluateFight(modifier);
@@ -15,7 +15,7 @@ public class GroupPool extends Group{
     }
 
 
-    void autoGenerateFights(){
+    public void autoGenerateFights(){
         int groupSize = groupParticipants.size();
         for(int round = 0; round < fightsPerCompetitor; round++){
             for(int i = 0; i < groupSize / 2 ; i++){

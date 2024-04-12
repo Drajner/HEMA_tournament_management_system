@@ -6,6 +6,8 @@ public class Person {
     private String surname;
     private String teamName;
 
+
+    public Person(){}
     public Person(String name, String surname){
         this.name = name;
         this.surname = surname;

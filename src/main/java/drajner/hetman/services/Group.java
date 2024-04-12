@@ -16,16 +16,40 @@ public abstract class Group {
         this.fights = new ArrayList<>();
     }
 
-    void addCompetitor(TournamentParticipant competitor){
-        this.groupParticipants.add(competitor);
+    public void addParticipant(TournamentParticipant participant){
+        this.groupParticipants.add(participant);
     }
 
-    void addFight(Fight fight){
+    public ArrayList<TournamentParticipant> getGroupParticipants(){
+        return groupParticipants;
+    }
+
+    public void deleteParticipant(int participantNumber){
+        groupParticipants.remove(participantNumber);
+    }
+
+    public void replaceParticipant(int fightNumber, TournamentParticipant participant){
+        groupParticipants.set(fightNumber, participant);
+    }
+
+    public void addFight(Fight fight){
         this.fights.add(fight);
     }
 
-    abstract void evaluateGroup(float modifier);
+    public ArrayList<Fight> getFights(){
+        return fights;
+    }
 
-    abstract void autoGenerateFights();
+    public void deleteFight(int fightNumber){
+        fights.remove(fightNumber);
+    }
+
+    public void replaceFight(int fightNumber, Fight fight){
+        fights.set(fightNumber, fight);
+    }
+
+    public abstract void evaluateGroup(float modifier);
+
+    public abstract void autoGenerateFights();
 
 }

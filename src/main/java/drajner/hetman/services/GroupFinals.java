@@ -12,11 +12,11 @@ public class GroupFinals extends Group{
        super(tournamentParticipants);
     }
 
-    void evaluateGroup(float modifier){
+    public void evaluateGroup(float modifier){
 
     }
 
-    void autoGenerateFights(){
+    public void autoGenerateFights(){
 
     }
 }

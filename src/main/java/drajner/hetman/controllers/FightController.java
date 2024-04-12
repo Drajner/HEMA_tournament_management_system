@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}/participants/{participantNumber}")
+@RequestMapping("tournaments/{tournamentNumber}/group/{groupNumber}/fight/{fightNumber}")
 @Log4j2
-public class ParticipantController {
+public class FightController {
+
 
 
 }

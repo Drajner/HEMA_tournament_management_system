@@ -48,6 +48,26 @@ public class Tournament {
         log.debug(String.format("Added '%s' to '%s' tournament.", newParticipant.getName(), name));
     }
 
+    public void removeParticipant(int number){
+        TournamentParticipant removedParticipant = participants.get(number);
+        participants.remove(number);
+        for (Group group: groups) {
+            group.getGroupParticipants().remove(removedParticipant);
+            for (Fight fight: group.getFights()){
+                if(fight.getFirstCompetitor() == removedParticipant){
+                    fight.setFirstCompetitor(null);
+                }
+                if(fight.getSecondCompetitor() == removedParticipant){
+                    fight.setSecondCompetitor(null);
+                }
+            }
+        }
+    }
+
+    public void replaceParticipant(int number, TournamentParticipant participant){
+        participants.set(number, participant);
+    }
+
     public void addGroupPool(){
         GroupPool newGroup = new GroupPool();
         groups.add(newGroup);

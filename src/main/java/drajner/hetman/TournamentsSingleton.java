@@ -1,5 +1,6 @@
 package drajner.hetman;
 
+import drajner.hetman.requests.FightReport;
 import drajner.hetman.services.Tournament;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ public class TournamentsSingleton {
     private static volatile TournamentsSingleton instance;
 
     public ArrayList<Tournament> tournaments;
+    public ArrayList<FightReport> reports;
 
     private TournamentsSingleton(){
         this.tournaments = new ArrayList<>();
@@ -42,5 +44,23 @@ public class TournamentsSingleton {
 
     public static Tournament get(int tournamentPos){
         return getInstance().tournaments.get(tournamentPos);
+    }
+
+    public static ArrayList<FightReport> getReports(){
+        return getInstance().reports;
+    }
+
+    public static void addReport(FightReport fightReport){
+        getInstance().reports.add(fightReport);
+    }
+
+    public static void removeReport(int number){
+        getInstance().reports.remove(number);
+    }
+
+    public static void acceptReport(int number){
+        FightReport acceptedReport = getInstance().reports.get(number);
+        getInstance().tournaments.get(acceptedReport.getTournamentNumber()).getGroups().get(acceptedReport.getGroupNumber())
+                .getFights().set(acceptedReport.getFightNumber(), acceptedReport.getFightProposition());
     }
 }

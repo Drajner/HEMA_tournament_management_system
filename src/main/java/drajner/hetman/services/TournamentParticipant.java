@@ -9,6 +9,7 @@ public class TournamentParticipant {
     private int cards;
     private int ranking;
 
+    public TournamentParticipant(){}
 
     public TournamentParticipant(Person person){
         this.person = person;

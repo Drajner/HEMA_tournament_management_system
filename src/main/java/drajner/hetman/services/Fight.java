@@ -12,6 +12,8 @@ public class Fight {
     private FightStatus status;
     private TournamentParticipant winner;
 
+
+    public Fight(){}
     public Fight(TournamentParticipant firstParticipant, TournamentParticipant secondParticipant){
         this.firstParticipant = firstParticipant;
         this.secondParticipant = secondParticipant;

@@ -9,7 +9,7 @@ public class FightReport {
     int fightNumber;
     Fight fightProposition;
 
-    FightReport(String username, int tournamentNumber, int groupNumber, int fightNumber, Fight fightProposition){
+    public FightReport(String username, int tournamentNumber, int groupNumber, int fightNumber, Fight fightProposition){
         this.username = username;
         this.tournamentNumber = tournamentNumber;
         this.groupNumber = groupNumber;

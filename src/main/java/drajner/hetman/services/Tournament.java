@@ -48,6 +48,16 @@ public class Tournament {
         log.debug(String.format("Added '%s' to '%s' tournament.", newParticipant.getName(), name));
     }
 
+    public void addGroupPool(){
+        GroupPool newGroup = new GroupPool();
+        groups.add(newGroup);
+    }
+
+    public void addGroupLadder(){
+        GroupFinals newGroup = new GroupFinals();
+        groups.add(newGroup);
+    }
+
     public void sortParticipants(){
         Collections.sort(participants, Comparator
                 .comparing(TournamentParticipant::getWins)
@@ -84,7 +94,7 @@ public class Tournament {
         for(int i=0;i<numberOfGroups;i++){
             newGroups.add(new GroupPool());
         }
-        for()
+        //for()
     }
 
 

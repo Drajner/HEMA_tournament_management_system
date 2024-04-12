@@ -1,11 +1,11 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.requests.TournamentAddRequest;
 import drajner.hetman.services.Person;
 import drajner.hetman.services.Tournament;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -26,8 +26,28 @@ public class TestController {
         throw new Exception("dupa");
     }
 
+    /*
     @RequestMapping("/tournaments")
     public ArrayList<Tournament> getTournaments() throws Exception{
         return TournamentsSingleton.getInstance().tournaments;
     }
+
+    @RequestMapping("/tournaments/{number}")
+    public Tournament getTournament(@PathVariable int number){
+        return TournamentsSingleton.get(number);
+    }
+
+    @RequestMapping("/tournaments/add/{name}")
+    public void addTournamentGet(@PathVariable String name){
+        Tournament newTournament = new Tournament(name);
+        TournamentsSingleton.add(newTournament);
+    }
+
+    @PostMapping("tournaments/add")
+    public void addTournament(@RequestBody String name){
+        Tournament newTournament = new Tournament(name);
+        TournamentsSingleton.add(newTournament);
+    }
+
+    */
 }

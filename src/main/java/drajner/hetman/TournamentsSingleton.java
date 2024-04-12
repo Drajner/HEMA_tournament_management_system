@@ -28,15 +28,19 @@ public class TournamentsSingleton {
         }
     }
 
-    public void add(Tournament tournament){
+    public static void add(Tournament tournament){
         getInstance().tournaments.add(tournament);
     }
 
-    public void remove(int tournamentPos){
+    public static void remove(int tournamentPos){
         getInstance().tournaments.remove(tournamentPos);
     }
 
-    public void replace(int tournamentPos, Tournament tournament){
+    public static void replace(int tournamentPos, Tournament tournament){
         getInstance().tournaments.set(tournamentPos, tournament);
+    }
+
+    public static Tournament get(int tournamentPos){
+        return getInstance().tournaments.get(tournamentPos);
     }
 }

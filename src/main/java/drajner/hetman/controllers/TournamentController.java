@@ -1,6 +1,7 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.services.Person;
 import drajner.hetman.services.Tournament;
 import drajner.hetman.services.TournamentParticipant;
@@ -45,7 +46,7 @@ public class TournamentController {
     }
 
     @PostMapping("/groups/add/ladder")
-    public void addLadderGroup(@PathVariable int tournamentNumber){
+    public void addLadderGroup(@PathVariable int tournamentNumber) throws OneFinalsException {
         TournamentsSingleton.get(tournamentNumber).addGroupLadder();
     }
 

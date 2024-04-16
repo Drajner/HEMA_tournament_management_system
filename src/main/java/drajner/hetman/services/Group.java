@@ -1,5 +1,8 @@
 package drajner.hetman.services;
 
+import drajner.hetman.errors.UnfinishedFightException;
+import drajner.hetman.errors.WrongAmountException;
+
 import java.util.ArrayList;
 
 public abstract class Group {
@@ -24,6 +27,10 @@ public abstract class Group {
         return groupParticipants;
     }
 
+    public TournamentParticipant getGroupParticipant(int number){
+        return groupParticipants.get(number);
+    }
+
     public void deleteParticipant(int participantNumber){
         groupParticipants.remove(participantNumber);
     }
@@ -40,6 +47,8 @@ public abstract class Group {
         return fights;
     }
 
+    public Fight getFight(int number) {return fights.get(number);}
+
     public void deleteFight(int fightNumber){
         fights.remove(fightNumber);
     }
@@ -48,8 +57,8 @@ public abstract class Group {
         fights.set(fightNumber, fight);
     }
 
-    public abstract void evaluateGroup(float modifier);
+    public abstract void evaluateGroup(float modifier) throws UnfinishedFightException;
 
-    public abstract void autoGenerateFights();
+    public abstract void autoGenerateFights() throws WrongAmountException;
 
 }

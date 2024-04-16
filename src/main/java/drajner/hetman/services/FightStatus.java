@@ -3,5 +3,6 @@ package drajner.hetman.services;
 public enum FightStatus {
     PENDING,
     GOING,
-    FINISHED
+    FINISHED,
+    EVALUATED
 }

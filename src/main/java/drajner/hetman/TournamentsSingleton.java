@@ -1,10 +1,15 @@
 package drajner.hetman;
 
+import drajner.hetman.errors.ReportMismatchException;
 import drajner.hetman.requests.FightReport;
+import drajner.hetman.services.Fight;
+import drajner.hetman.services.FightStatus;
+import drajner.hetman.services.Group;
 import drajner.hetman.services.Tournament;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
-
+@Log4j2
 public class TournamentsSingleton {
 
     private static volatile TournamentsSingleton instance;
@@ -58,9 +63,31 @@ public class TournamentsSingleton {
         getInstance().reports.remove(number);
     }
 
-    public static void acceptReport(int number){
+    public static void acceptReport(int number) throws ReportMismatchException{
         FightReport acceptedReport = getInstance().reports.get(number);
-        getInstance().tournaments.get(acceptedReport.getTournamentNumber()).getGroups().get(acceptedReport.getGroupNumber())
-                .getFights().set(acceptedReport.getFightNumber(), acceptedReport.getFightProposition());
+        Group reportedGroup =  getInstance().tournaments
+                .get(acceptedReport.getTournamentNumber())
+                .getGroup(acceptedReport.getGroupNumber());
+        Fight reportedFight = reportedGroup.getFight(acceptedReport.getFightNumber());
+        if( !(reportedFight.getFirstParticipant() == reportedGroup.getGroupParticipant(acceptedReport.getFightNumber()) &&
+            reportedFight.getSecondParticipant() == reportedGroup.getGroupParticipant(acceptedReport.getSecondParticipantNumber())) ){
+            throw new ReportMismatchException("Accepted report doesn't match with its selected fight.");
+        }
+        reportedFight.setFirstParticipantPoints(acceptedReport.getFirstParticipantPoints());
+        reportedFight.setSecondParticipantPoints(acceptedReport.getSecondParticipantPoints());
+        reportedFight.setFirstParticipantCards(acceptedReport.getFirstParticipantCards());
+        reportedFight.setSecondParticipantCards(acceptedReport.getSecondParticipantCards());
+        reportedFight.setDoubles(acceptedReport.getDoubles());
+        reportedFight.setWinner(reportedGroup.getGroupParticipant(acceptedReport.getWinnerNumber()));
+        reportedFight.setStatus(FightStatus.FINISHED);
+
+    }
+
+    public static void importTournaments(String path){
+
+    }
+
+    public static void exportTournaments(){
+        
     }
 }

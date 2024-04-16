@@ -1,34 +1,41 @@
 package drajner.hetman.services;
 
+import drajner.hetman.errors.UnfinishedFightException;
+import drajner.hetman.errors.WrongAmountException;
+
 import java.util.ArrayList;
 
 public class GroupPool extends Group{
 
-    private int fightsPerCompetitor;
-
-    public void evaluateGroup(float modifier){
+    public void evaluateGroup(float modifier) throws UnfinishedFightException {
         for(Fight fight: fights){
             if(fight.getStatus() == FightStatus.FINISHED){
                 fight.evaluateFight(modifier);
+                fight.setStatus(FightStatus.EVALUATED);
             }
         }
     }
 
-
-    public void autoGenerateFights(){
+    public void autoGenerateFights() throws WrongAmountException {
         int groupSize = groupParticipants.size();
-        for(int round = 0; round < fightsPerCompetitor; round++){
-            for(int i = 0; i < groupSize / 2 ; i++){
-                TournamentParticipant firstFighter = groupParticipants.get(i);
-                TournamentParticipant secondFighter = groupParticipants.get(groupSize - 1 - i);
+        ArrayList<TournamentParticipant> tempParticipantList = new ArrayList<>(groupParticipants);
+        int roundAmount = groupSize;
+        if(roundAmount / 2 == 0) roundAmount -= 1;
+        for (int round = 0; round < (roundAmount - 1); round++) {
+            for (int i = 0; i < (groupSize / 2); i++) {
+                TournamentParticipant firstFighter = tempParticipantList.get(i);
+                TournamentParticipant secondFighter = tempParticipantList.get(groupSize - 1 - i);
                 Fight fightInGroup = new Fight(firstFighter, secondFighter);
+                fights.add(fightInGroup);
             }
 
-            TournamentParticipant lastFighter = groupParticipants.get(groupSize - 1);
-            for(int i = groupSize - 1; i > 1 ; i--){
-                groupParticipants.set(i, groupParticipants.get(i - 1));
+            TournamentParticipant lastFighter = tempParticipantList.get(groupSize - 1);
+            for (int i = groupSize - 1; i > 1; i--) {
+                tempParticipantList.set(i, tempParticipantList.get(i - 1));
             }
-            groupParticipants.set(1, lastFighter);
+            tempParticipantList.set(1, lastFighter);
         }
+
+
     }
 }

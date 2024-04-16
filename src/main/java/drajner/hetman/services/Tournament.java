@@ -1,5 +1,6 @@
 package drajner.hetman.services;
 
+import drajner.hetman.errors.OneFinalsException;
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 
@@ -13,6 +14,8 @@ public class Tournament {
     private String name;
     private ArrayList<TournamentParticipant> participants;
     private ArrayList<Group> groups;
+
+    private GroupFinals finals;
 
     public Tournament(String name){
         this.name = name;
@@ -37,6 +40,12 @@ public class Tournament {
         return groups;
     }
 
+    public GroupFinals getFinals() {
+        return finals;
+    }
+
+    public Group getGroup(int number){return groups.get(number);}
+
     public void addParticipant(TournamentParticipant newParticipant){
         participants.add(newParticipant);
         log.debug(String.format("Added '%s' to '%s' tournament.", newParticipant.getName(), name));
@@ -54,11 +63,11 @@ public class Tournament {
         for (Group group: groups) {
             group.getGroupParticipants().remove(removedParticipant);
             for (Fight fight: group.getFights()){
-                if(fight.getFirstCompetitor() == removedParticipant){
-                    fight.setFirstCompetitor(null);
+                if(fight.getFirstParticipant() == removedParticipant){
+                    fight.setFirstParticipant(null);
                 }
-                if(fight.getSecondCompetitor() == removedParticipant){
-                    fight.setSecondCompetitor(null);
+                if(fight.getSecondParticipant() == removedParticipant){
+                    fight.setSecondParticipant(null);
                 }
             }
         }
@@ -68,14 +77,21 @@ public class Tournament {
         participants.set(number, participant);
     }
 
+    public TournamentParticipant getParticipant(int number){return participants.get(number);}
+
     public void addGroupPool(){
         GroupPool newGroup = new GroupPool();
         groups.add(newGroup);
     }
 
-    public void addGroupLadder(){
-        GroupFinals newGroup = new GroupFinals();
-        groups.add(newGroup);
+    public void addGroupLadder() throws OneFinalsException{
+        if(finals == null) {
+            GroupFinals newGroup = new GroupFinals();
+            groups.add(newGroup);
+        }
+        else{
+            throw new OneFinalsException("There can be only one finals group!");
+        }
     }
 
     public void sortParticipants(){

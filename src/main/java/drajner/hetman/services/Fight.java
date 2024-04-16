@@ -1,5 +1,11 @@
 package drajner.hetman.services;
 
+import drajner.hetman.errors.UnfinishedFightException;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Fight {
 
     private TournamentParticipant firstParticipant;
@@ -14,6 +20,18 @@ public class Fight {
 
 
     public Fight(){}
+
+    public Fight(TournamentParticipant firstParticipant){
+        this.firstParticipant = firstParticipant;
+        this.secondParticipant = null;
+        this.firstParticipantPoints = 0;
+        this.secondParticipantPoints = 0;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = 0;
+        this.status = FightStatus.PENDING;
+        this.winner = null;
+    }
     public Fight(TournamentParticipant firstParticipant, TournamentParticipant secondParticipant){
         this.firstParticipant = firstParticipant;
         this.secondParticipant = secondParticipant;
@@ -38,71 +56,28 @@ public class Fight {
         this.winner = winner;
     }
 
-    public TournamentParticipant getFirstCompetitor() {
-        return firstParticipant;
-    }
-
-    public TournamentParticipant getSecondCompetitor() {
-        return secondParticipant;
-    }
-
-    public int getFirstParticipantPoints() {
-        return firstParticipantPoints;
-    }
-
-    public int getSecondParticipantPoints() {
-        return secondParticipantPoints;
-    }
-
-    public int getDoubles() {
-        return doubles;
-    }
-
-    public FightStatus getStatus() {
-        return status;
-    }
-
-    public TournamentParticipant getWinner() {
-        return winner;
-    }
-
-    public void setFirstCompetitor(TournamentParticipant firstParticipant) {
-        this.firstParticipant = firstParticipant;
-    }
-
     public void setFirstParticipantPoints(int firstParticipantPoints) {
         this.firstParticipantPoints = firstParticipantPoints;
     }
 
-    public void setSecondCompetitor(TournamentParticipant secondParticipant) {
-        this.secondParticipant = secondParticipant;
+    public TournamentParticipant getLoser() throws UnfinishedFightException{
+        if(!(status == FightStatus.FINISHED)){
+            throw new UnfinishedFightException("Fight is not yet finished");
+        }
+        if(winner == firstParticipant) return secondParticipant;
+        else return firstParticipant;
     }
 
-    public void setSecondParticipantPoints(int secondParticipantPoints) {
-        this.secondParticipantPoints = secondParticipantPoints;
-    }
-
-    public void setStatus(FightStatus status) {
-        this.status = status;
-    }
-
-    public void setDoubles(int doubles) {
-        this.doubles = doubles;
-    }
-
-    public void setWinner(TournamentParticipant winner) {
-        this.winner = winner;
-    }
-
-    public void evaluateFight(float modifier){
+    public void evaluateFight(float modifier) throws UnfinishedFightException{
         if(status == FightStatus.FINISHED) {
             evaluateParticipant(firstParticipant, firstParticipantPoints, secondParticipantPoints, firstParticipantCards, modifier);
             evaluateParticipant(secondParticipant, secondParticipantPoints, firstParticipantPoints, secondParticipantCards, modifier);
             if (winner != null) {
                 winner.addWin();
             }
+            setStatus(FightStatus.EVALUATED);
         }else{
-            System.out.println("Unfinished fight");
+            throw new UnfinishedFightException("This fight is not yet finished!");
         }
     }
 

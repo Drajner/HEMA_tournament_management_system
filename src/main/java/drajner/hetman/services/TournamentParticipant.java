@@ -1,5 +1,10 @@
 package drajner.hetman.services;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TournamentParticipant {
     private Person person;
     private CompetitorStatus status;
@@ -29,51 +34,7 @@ public class TournamentParticipant {
         this.cards = cards;
     }
 
-    public Person getCompetitor() {
-        return person;
-    }
-
     public String getName(){return (person.getName() + " " + person.getSurname());}
-
-    public CompetitorStatus getStatus() {
-        return status;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
-    public float getDoubles() {
-        return doubles;
-    }
-
-    public float getWins() {
-        return wins;
-    }
-
-    public int getCards() {
-        return cards;
-    }
-
-    public int getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(int ranking) {
-        this.ranking = ranking;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public void setStatus(CompetitorStatus status) {
-        this.status = status;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-    }
 
     public void addScore(float score) {
         this.score += score;

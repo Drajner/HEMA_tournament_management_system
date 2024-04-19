@@ -1,6 +1,7 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
 import drajner.hetman.requests.FightReport;
@@ -11,53 +12,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}/groups/{groupNumber}")
+@RequestMapping("tournaments/{tournamentNumber}/groups")
 @Log4j2
 public class GroupController {
 
+
     @GetMapping("/get")
-    public Group getGroup(@PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        return TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber);
+    public ArrayList<TournamentParticipant> getGroups(@PathVariable int tournamentNumber){
+        return TournamentsSingleton.get(tournamentNumber).getParticipants();
     }
 
-    @GetMapping("/participants")
-    public ArrayList<TournamentParticipant> getTournamentParticipants(@PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        return TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipants();
+    @PostMapping("add/ladder")
+    public void addLadderGroup(@PathVariable int tournamentNumber) throws OneFinalsException {
+        TournamentsSingleton.get(tournamentNumber).addGroupLadder();
     }
 
-    @PostMapping("/participants/add")
-    public void addTournamentParticipant(@RequestBody TournamentParticipant tournamentParticipant, @PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).addParticipant(tournamentParticipant);
+    @PostMapping("add/pool")
+    public void addPoolGroup(@RequestBody Person person, @PathVariable int tournamentNumber){
+        TournamentsSingleton.get(tournamentNumber).addGroupPool();
     }
 
-    @DeleteMapping("participants/delete/{number}")
-    public void deleteParticipant(@PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).deleteParticipant(number);
-    }
-
-    @DeleteMapping("participants/replace/{number}")
-    public void replaceParticipant(@RequestBody TournamentParticipant tournamentParticipant, @PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).replaceParticipant(number, tournamentParticipant);
-    }
-
-    @GetMapping("/fights")
-    public ArrayList<Fight> getFights(@PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        return TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getFights();
-    }
-
-    @PostMapping("/fights/add")
-    public void addFight(@RequestBody Fight fight, @PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).addFight(fight);
-    }
-
-    @DeleteMapping("fights/delete/{number}")
-    public void deleteFight(@PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).deleteFight(number);
-    }
-
-    @PostMapping("fight/replace/{number}")
-    public void replaceFight(@RequestBody Fight fight, @PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).replaceFight(number, fight);
+    @DeleteMapping("delete/{number}")
+    public void deleteGroup(@PathVariable int tournamentNumber, @PathVariable int number){
+        TournamentsSingleton.get(tournamentNumber).getGroups().remove(number);
     }
 
     @PostMapping("autoGenerateFights")

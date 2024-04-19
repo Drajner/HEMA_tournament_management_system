@@ -11,58 +11,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}")
+@RequestMapping("tournaments")
 @Log4j2
 public class TournamentController {
 
     @GetMapping("/get")
-    public Tournament getTournament(@PathVariable int tournamentNumber){
-        return TournamentsSingleton.get(tournamentNumber);
+    public ArrayList<Tournament> getTournaments() throws Exception{
+        return TournamentsSingleton.getInstance().tournaments;
     }
 
-    @GetMapping("/participants")
-    public ArrayList<TournamentParticipant> getTournamentParticipants(@PathVariable int tournamentNumber){
-        return TournamentsSingleton.get(tournamentNumber).getParticipants();
+    @PostMapping("/add")
+    public void addTournament(@RequestBody String name){
+        Tournament newTournament = new Tournament(name);
+        TournamentsSingleton.add(newTournament);
     }
 
-    @PostMapping("/participants/add")
-    public void addTournamentParticipant(@RequestBody Person person, @PathVariable int tournamentNumber){
-        TournamentsSingleton.get(tournamentNumber).addParticipant(person);
+    @DeleteMapping("/delete/{number}")
+    public void deleteTournament(@PathVariable int number)
+    {
+        TournamentsSingleton.remove(number);
     }
 
-    @DeleteMapping("participants/delete/{number}")
-    public void deleteParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).removeParticipant(number);
-    }
-
-    @PostMapping("/participants/replace/{number}")
-    public void addTournamentParticipant(@RequestBody TournamentParticipant participant, @PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).replaceParticipant(number, participant);
-    }
-
-    @GetMapping("/groups")
-    public ArrayList<TournamentParticipant> getGroups(@PathVariable int tournamentNumber){
-        return TournamentsSingleton.get(tournamentNumber).getParticipants();
-    }
-
-    @PostMapping("/groups/add/ladder")
-    public void addLadderGroup(@PathVariable int tournamentNumber) throws OneFinalsException {
-        TournamentsSingleton.get(tournamentNumber).addGroupLadder();
-    }
-
-    @PostMapping("/groups/add/pool")
-    public void addPoolGroup(@RequestBody Person person, @PathVariable int tournamentNumber){
-        TournamentsSingleton.get(tournamentNumber).addGroupPool();
-    }
-
-    @DeleteMapping("groups/delete/{number}")
-    public void deleteGroup(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroups().remove(number);
-    }
-
-    @PostMapping("/rename")
-    public void changeName(@RequestBody String string, @PathVariable int tournamentNumber){
-        TournamentsSingleton.get(tournamentNumber).setName(string);
+    @PostMapping("/rename/{number}")
+    public void changeName(@RequestBody String string, @PathVariable int number){
+        TournamentsSingleton.get(number).setName(string);
 
     }
 

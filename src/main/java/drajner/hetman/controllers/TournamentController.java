@@ -1,7 +1,10 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.errors.OneFinalsException;
+import drajner.hetman.errors.WrongAmountException;
+import drajner.hetman.services.GroupFinals;
 import drajner.hetman.services.Person;
 import drajner.hetman.services.Tournament;
 import drajner.hetman.services.TournamentParticipant;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 public class TournamentController {
 
     @GetMapping("/get")
-    public ArrayList<Tournament> getTournaments() throws Exception{
+    public ArrayList<Tournament> getTournaments(){
         return TournamentsSingleton.getInstance().tournaments;
     }
 
@@ -35,7 +38,22 @@ public class TournamentController {
     @PostMapping("/rename/{number}")
     public void changeName(@RequestBody String string, @PathVariable int number){
         TournamentsSingleton.get(number).setName(string);
+    }
+
+    @PostMapping("/generateGroups/{number}")
+    public void generateGroups(@RequestBody int numberOfGroups, @PathVariable int number) throws DuplicateException, WrongAmountException{
+        TournamentsSingleton.get(number).createGroups(numberOfGroups);
 
     }
 
+    @PostMapping("/generateLadder/{number}")
+    public void generateLadder(@RequestBody int numberOfParticipants, @PathVariable int number) throws WrongAmountException{
+        TournamentsSingleton.get(number).createLadder(numberOfParticipants);
+
+    }
+
+    @GetMapping("/getFinals/{number}")
+    public GroupFinals getFinals(@PathVariable int number){
+        return TournamentsSingleton.get(number).getFinals();
+    }
 }

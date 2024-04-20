@@ -1,5 +1,5 @@
 package drajner.hetman.entities;
-
+/*
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -20,3 +20,5 @@ public class SessionEntity {
     private String sessionId;
     private int userId;
 }
+
+ */

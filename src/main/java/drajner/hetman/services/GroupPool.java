@@ -2,18 +2,22 @@ package drajner.hetman.services;
 
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 
+@Log4j2
 public class GroupPool extends Group{
 
     public void evaluateGroup(float modifier) throws UnfinishedFightException {
+        log.info("Evaluating group.");
         for(Fight fight: fights){
             if(fight.getStatus() == FightStatus.FINISHED){
                 fight.evaluateFight(modifier);
                 fight.setStatus(FightStatus.EVALUATED);
             }
         }
+        log.info("Evaluated group.");
     }
 
     public void autoGenerateFights() throws WrongAmountException {
@@ -35,7 +39,6 @@ public class GroupPool extends Group{
             }
             tempParticipantList.set(1, lastFighter);
         }
-
-
+        log.info("Auto generated group fights.");
     }
 }

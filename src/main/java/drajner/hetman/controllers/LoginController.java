@@ -1,6 +1,6 @@
 package drajner.hetman.controllers;
 
-
+/*
 import drajner.hetman.entities.SessionEntity;
 import drajner.hetman.entities.UserEntity;
 import drajner.hetman.repositories.SessionRepo;
@@ -69,3 +69,4 @@ public class LoginController {
         return sessionStr.toString();
     }
 }
+*/

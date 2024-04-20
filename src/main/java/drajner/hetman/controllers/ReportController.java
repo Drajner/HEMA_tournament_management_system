@@ -1,6 +1,7 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.errors.NotPendingException;
 import drajner.hetman.errors.ReportMismatchException;
 import drajner.hetman.requests.FightReport;
 import drajner.hetman.services.Fight;
@@ -20,7 +21,7 @@ public class ReportController {
     }
 
     @PostMapping("accept/{number}")
-    public void acceptReport(@PathVariable int number) throws ReportMismatchException {
+    public void acceptReport(@PathVariable int number) throws ReportMismatchException, NotPendingException {
         TournamentsSingleton.acceptReport(number);
     }
 

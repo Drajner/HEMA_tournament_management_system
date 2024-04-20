@@ -1,6 +1,7 @@
 package drajner.hetman;
 
 import drajner.hetman.errors.ReportMismatchException;
+import drajner.hetman.errors.NotPendingException;
 import drajner.hetman.requests.FightReport;
 import drajner.hetman.services.Fight;
 import drajner.hetman.services.FightStatus;
@@ -63,7 +64,7 @@ public class TournamentsSingleton {
         getInstance().reports.remove(number);
     }
 
-    public static void acceptReport(int number) throws ReportMismatchException{
+    public static void acceptReport(int number) throws ReportMismatchException, NotPendingException{
         FightReport acceptedReport = getInstance().reports.get(number);
         Group reportedGroup =  getInstance().tournaments
                 .get(acceptedReport.getTournamentNumber())
@@ -73,6 +74,7 @@ public class TournamentsSingleton {
             reportedFight.getSecondParticipant() == reportedGroup.getGroupParticipant(acceptedReport.getSecondParticipantNumber())) ){
             throw new ReportMismatchException("Accepted report doesn't match with its selected fight.");
         }
+        if( reportedFight.getStatus() != FightStatus.PENDING) throw new NotPendingException("This fight is alreadey finished.");
         reportedFight.setFirstParticipantPoints(acceptedReport.getFirstParticipantPoints());
         reportedFight.setSecondParticipantPoints(acceptedReport.getSecondParticipantPoints());
         reportedFight.setFirstParticipantCards(acceptedReport.getFirstParticipantCards());

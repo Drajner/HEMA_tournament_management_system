@@ -10,4 +10,11 @@ class HetmanApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void sanityCheck() {
+		assert 1==1;
+	}
+
+
+
 }

@@ -3,7 +3,9 @@ package drajner.hetman.services;
 import drajner.hetman.errors.UnfinishedFightException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Getter
 @Setter
 public class Fight {
@@ -19,7 +21,17 @@ public class Fight {
     private TournamentParticipant winner;
 
 
-    public Fight(){}
+    public Fight(){
+        this.firstParticipant = null;
+        this.secondParticipant = null;
+        this.firstParticipantPoints = 0;
+        this.secondParticipantPoints = 0;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = 0;
+        this.status = FightStatus.PENDING;
+        this.winner = null;
+    }
 
     public Fight(TournamentParticipant firstParticipant){
         this.firstParticipant = firstParticipant;
@@ -56,11 +68,7 @@ public class Fight {
         this.winner = winner;
     }
 
-    public void setFirstParticipantPoints(int firstParticipantPoints) {
-        this.firstParticipantPoints = firstParticipantPoints;
-    }
-
-    public TournamentParticipant getLoser() throws UnfinishedFightException{
+    public TournamentParticipant findLoser() throws UnfinishedFightException{
         if(!(status == FightStatus.FINISHED)){
             throw new UnfinishedFightException("Fight is not yet finished");
         }
@@ -76,6 +84,7 @@ public class Fight {
                 winner.addWin();
             }
             setStatus(FightStatus.EVALUATED);
+            log.info(String.format("Evaluated fight between '%s' and '%s'.", firstParticipant.getName(), secondParticipant.getName()));
         }else{
             throw new UnfinishedFightException("This fight is not yet finished!");
         }
@@ -87,5 +96,6 @@ public class Fight {
         participant.addScore(participantScore);
         participant.addDoubles(doubles);
         participant.addCards(cards);
+        log.info(String.format("Scores added to '%s' ranking.", participant.getName()));
     }
 }

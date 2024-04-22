@@ -26,9 +26,6 @@ public class TournamentController {
 
     @GetMapping("/get")
     public ArrayList<Tournament> getTournaments(){
-
-        UserEntity newUser = new UserEntity("dupa", "dupa");
-        userRepo.save(newUser);
         return TournamentsSingleton.getInstance().tournaments;
     }
 

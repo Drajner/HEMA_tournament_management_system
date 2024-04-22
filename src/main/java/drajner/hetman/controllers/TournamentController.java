@@ -1,14 +1,17 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.entities.UserEntity;
 import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.WrongAmountException;
+import drajner.hetman.repositories.UserRepo;
 import drajner.hetman.services.GroupFinals;
 import drajner.hetman.services.Person;
 import drajner.hetman.services.Tournament;
 import drajner.hetman.services.TournamentParticipant;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,8 +21,14 @@ import java.util.ArrayList;
 @Log4j2
 public class TournamentController {
 
+    @Autowired
+    UserRepo userRepo;
+
     @GetMapping("/get")
     public ArrayList<Tournament> getTournaments(){
+
+        UserEntity newUser = new UserEntity("dupa", "dupa");
+        userRepo.save(newUser);
         return TournamentsSingleton.getInstance().tournaments;
     }
 

@@ -1,5 +1,5 @@
 package drajner.hetman.entities;
-/*
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,13 +12,11 @@ import lombok.Setter;
 @Setter
 public class SessionEntity {
     public SessionEntity() { }
-    public SessionEntity(String sessionId, int userId){
+    public SessionEntity(String sessionId, Long userId){
         this.sessionId = sessionId;
         this.userId = userId;
     }
     @Id
     private String sessionId;
-    private int userId;
+    private Long userId;
 }
-
- */

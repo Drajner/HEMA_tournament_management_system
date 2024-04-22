@@ -1,5 +1,5 @@
 package drajner.hetman.entities;
-/*
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,7 +14,7 @@ import lombok.Setter;
 public class UserEntity {
     public UserEntity() { }
 
-    public UserEntity(int userId, String username, String password, boolean isAdmin)
+    public UserEntity(Long userId, String username, String password, boolean isAdmin)
     {
         this.userId = userId;
         this.username = username;
@@ -31,11 +31,9 @@ public class UserEntity {
 
     @Id
     @GeneratedValue
-    private int userId;
+    private Long userId;
     private String username;
     private String password;
 
     boolean isAdmin;
 }
-
- */

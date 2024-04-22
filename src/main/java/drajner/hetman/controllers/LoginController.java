@@ -1,6 +1,6 @@
 package drajner.hetman.controllers;
 
-/*
+
 import drajner.hetman.entities.SessionEntity;
 import drajner.hetman.entities.UserEntity;
 import drajner.hetman.repositories.SessionRepo;
@@ -10,10 +10,13 @@ import drajner.hetman.requests.LoginResponse;
 import drajner.hetman.requests.RegisterRequest;
 import drajner.hetman.requests.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -43,6 +46,13 @@ public class LoginController {
         return new LoginResponse(true, token);
     }
 
+    @GetMapping("/getUsers")
+    public List<UserEntity> getUsers()
+    {
+        List<UserEntity> users = userRepo.findAll();
+        return users;
+    }
+
     @PostMapping("/register")
     public RegisterResponse register(@RequestBody RegisterRequest requestBody)
     {
@@ -69,4 +79,3 @@ public class LoginController {
         return sessionStr.toString();
     }
 }
-*/

@@ -14,19 +14,20 @@ public class GroupEntity {
 
     @Id
     @GeneratedValue
-    Long id;
+    Long groupId;
 
     @ManyToOne
     @JoinColumn(name="tournamentId", nullable = false)
-    TournamentEntity tournamentEntity;
+    TournamentEntity tournament;
 
     @ManyToMany(mappedBy = "groupParticipations")
-    List<GroupEntity> groupParticipants;
+    List<TournamentParticipantEntity> groupParticipants;
 
-    @OneToMany(mappedBy = "fights")
+    @OneToMany(mappedBy = "group")
     List<FightEntity> groupFights;
 
     float modifier;
+
 
 
 }

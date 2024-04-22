@@ -12,15 +12,15 @@ import lombok.Setter;
 public class FightEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "participantId")
+    @JoinColumn(name = "firstParticipantId")
     TournamentParticipantEntity firstParticipant;
 
     @ManyToOne
-    @JoinColumn(name = "participantId")
+    @JoinColumn(name = "secondParticipantId")
     TournamentParticipantEntity secondParticipant;
 
     int firstParticipantPoints;
@@ -33,10 +33,10 @@ public class FightEntity {
     FightStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "participantId")
+    @JoinColumn(name = "winnerId")
     TournamentParticipantEntity winner;
 
     @ManyToOne
     @JoinColumn(name = "groupId")
-    GroupEntity groupId;
+    GroupEntity group;
 }

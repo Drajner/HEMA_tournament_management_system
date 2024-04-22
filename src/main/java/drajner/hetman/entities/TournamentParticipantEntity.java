@@ -14,7 +14,8 @@ import java.util.List;
 public class TournamentParticipantEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     Long participantId;
     String name;
     String surname;
@@ -31,7 +32,7 @@ public class TournamentParticipantEntity {
 
     @ManyToOne
     @JoinColumn(name="tournamentId", nullable=false)
-    TournamentEntity tournamentId;
+    TournamentEntity tournamentParticipation;
 
     @ManyToMany
     @JoinTable(
@@ -41,6 +42,4 @@ public class TournamentParticipantEntity {
     )
     List<GroupEntity> groupParticipations;
 
-    @OneToMany
-    List<GroupEntity> fights;
 }

@@ -17,11 +17,17 @@ public class TournamentEntity {
     Long tournamentId;
     String name;
 
-    @OneToMany(mappedBy="tournamentParticipants")
+    @OneToMany(mappedBy="tournamentParticipation")
     List<TournamentParticipantEntity> participants;
 
-    @OneToMany(mappedBy="groups")
+    @OneToMany(mappedBy="tournament")
     List<GroupEntity> groups;
 
+    @ManyToOne
+    @JoinColumn(name="finalFight")
+    FinalsTreeNodeEntity finalFight;
 
+    @ManyToOne
+    @JoinColumn(name="thirdPlaceFight")
+    FinalsTreeNodeEntity thirdPlaceFight;
 }

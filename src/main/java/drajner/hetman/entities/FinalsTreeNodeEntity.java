@@ -1,9 +1,6 @@
 package drajner.hetman.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +12,17 @@ public class FinalsTreeNodeEntity {
 
     @Id
     @GeneratedValue
-    Long id;
+    Long nodeId;
 
+    @ManyToOne
+    @JoinColumn(name="fightId")
+    FightEntity fight;
+
+    @ManyToOne
+    @JoinColumn(name="firstChildNodeId")
+    FinalsTreeNodeEntity firstChildNode;
+
+    @ManyToOne
+    @JoinColumn(name="secondChildNodeId")
+    FinalsTreeNodeEntity secondChildNode;
 }

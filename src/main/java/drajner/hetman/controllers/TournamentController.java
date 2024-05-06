@@ -1,20 +1,27 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.entities.UserEntity;
 import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.WrongAmountException;
+import drajner.hetman.repositories.TournamentRepo;
 import drajner.hetman.repositories.UserRepo;
+import drajner.hetman.requests.GenericResponse;
 import drajner.hetman.services.GroupFinals;
 import drajner.hetman.services.Person;
 import drajner.hetman.services.Tournament;
 import drajner.hetman.services.TournamentParticipant;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("tournaments")
@@ -22,28 +29,52 @@ import java.util.ArrayList;
 public class TournamentController {
 
     @Autowired
-    UserRepo userRepo;
+    TournamentRepo tournamentRepo;
 
     @GetMapping("/get")
-    public ArrayList<Tournament> getTournaments(){
-        return TournamentsSingleton.getInstance().tournaments;
+    public ResponseEntity<Object> getTournaments(){
+        try {
+            return ResponseEntity.ok(tournamentRepo.findAll());
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     @PostMapping("/add")
-    public void addTournament(@RequestBody String name){
-        Tournament newTournament = new Tournament(name);
-        TournamentsSingleton.add(newTournament);
+    public ResponseEntity<Object> addTournament(@RequestBody String name){
+        try {
+            TournamentEntity newTournament = new TournamentEntity(name);
+            return ResponseEntity.ok(tournamentRepo.save(newTournament));
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @DeleteMapping("/delete/{number}")
-    public void deleteTournament(@PathVariable int number)
+
+    @DeleteMapping("/delete/{tournamentId}")
+    public ResponseEntity<Object> deleteTournament(@PathVariable Long tournamentId)
     {
-        TournamentsSingleton.remove(number);
+        try {
+            tournamentRepo.deleteById(tournamentId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
+
     }
 
     @PostMapping("/rename/{number}")
-    public void changeName(@RequestBody String string, @PathVariable int number){
-        TournamentsSingleton.get(number).setName(string);
+    public ResponseEntity<Object> changeName(@RequestBody String tournamentName, @PathVariable Long tournamentId){
+        try {
+            TournamentEntity editedTournament = tournamentRepo.findById(tournamentId).get();
+            editedTournament.setName(tournamentName);
+            return ResponseEntity.ok(tournamentRepo.save(editedTournament));
+        }catch(NoSuchElementException e){
+            return ResponseEntity.badRequest().body(e);
+        }
+        catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     @PostMapping("/generateGroups/{number}")

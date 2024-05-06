@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,4 +31,8 @@ public class TournamentEntity {
     @ManyToOne
     @JoinColumn(name="thirdPlaceFight")
     FinalsTreeNodeEntity thirdPlaceFight;
+
+    public TournamentEntity(String name){
+        this.name = name;
+    }
 }

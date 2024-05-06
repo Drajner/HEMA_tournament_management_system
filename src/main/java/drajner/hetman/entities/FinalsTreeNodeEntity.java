@@ -1,5 +1,6 @@
 package drajner.hetman.entities;
 
+import drajner.hetman.services.Fight;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ public class FinalsTreeNodeEntity {
     @GeneratedValue
     Long nodeId;
 
+    boolean reverted;
+
     @ManyToOne
     @JoinColumn(name="fightId")
     FightEntity fight;
@@ -25,4 +28,10 @@ public class FinalsTreeNodeEntity {
     @ManyToOne
     @JoinColumn(name="secondChildNodeId")
     FinalsTreeNodeEntity secondChildNode;
+
+    public FinalsTreeNodeEntity(){this.fight = new FightEntity();}
+    public FinalsTreeNodeEntity(boolean reverted){
+        this.fight = new FightEntity();
+        this.reverted = reverted;
+    }
 }

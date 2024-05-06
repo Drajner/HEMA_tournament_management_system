@@ -4,22 +4,31 @@ import drajner.hetman.TournamentsSingleton;
 import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
+import drajner.hetman.repositories.GroupRepo;
 import drajner.hetman.requests.FightReport;
 import drajner.hetman.services.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}/groups")
+@RequestMapping("tournaments/{tournamentId}/groups")
 @Log4j2
 public class GroupController {
 
+    @Autowired
+    GroupRepo groupRepo;
 
     @GetMapping("/get")
-    public ArrayList<Group> getGroups(@PathVariable int tournamentNumber){
-        return TournamentsSingleton.get(tournamentNumber).getGroups();
+    public ResponseEntity<Object> getGroups(@PathVariable Long tournamentId){
+        try {
+            return ResponseEntity.ok(groupRepo.findByTournamentId(tournamentId));
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     /*

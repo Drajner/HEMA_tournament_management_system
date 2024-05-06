@@ -1,6 +1,8 @@
 package drajner.hetman.entities;
 
+import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.services.FightStatus;
+import drajner.hetman.services.TournamentParticipant;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,4 +41,59 @@ public class FightEntity {
     @ManyToOne
     @JoinColumn(name = "groupId")
     GroupEntity group;
+
+    public FightEntity(){
+        this.firstParticipant = null;
+        this.secondParticipant = null;
+        this.firstParticipantPoints = 0;
+        this.secondParticipantPoints = 0;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = 0;
+        this.status = FightStatus.PENDING;
+        this.winner = null;
+    }
+
+    public FightEntity(TournamentParticipantEntity firstParticipant){
+        this.firstParticipant = firstParticipant;
+        this.secondParticipant = null;
+        this.firstParticipantPoints = 0;
+        this.secondParticipantPoints = 0;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = 0;
+        this.status = FightStatus.PENDING;
+        this.winner = null;
+    }
+    public FightEntity(TournamentParticipantEntity firstParticipant, TournamentParticipantEntity secondParticipant){
+        this.firstParticipant = firstParticipant;
+        this.secondParticipant = secondParticipant;
+        this.firstParticipantPoints = 0;
+        this.secondParticipantPoints = 0;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = 0;
+        this.status = FightStatus.PENDING;
+        this.winner = null;
+    }
+
+    public FightEntity(TournamentParticipantEntity firstParticipant, TournamentParticipantEntity secondParticipant, int firstParticipantPoints, int secondParticipantPoints, int doubles, FightStatus status, TournamentParticipantEntity winner){
+        this.firstParticipant = firstParticipant;
+        this.secondParticipant = secondParticipant;
+        this.firstParticipantPoints = firstParticipantPoints;
+        this.secondParticipantPoints = secondParticipantPoints;
+        this.firstParticipantCards = 0;
+        this.secondParticipantCards = 0;
+        this.doubles = doubles;
+        this.status = status;
+        this.winner = winner;
+    }
+
+    public TournamentParticipantEntity findLoser() throws UnfinishedFightException {
+        if(!(status == FightStatus.FINISHED)){
+            throw new UnfinishedFightException("Fight is not yet finished");
+        }
+        if(winner == firstParticipant) return secondParticipant;
+        else return firstParticipant;
+    }
 }

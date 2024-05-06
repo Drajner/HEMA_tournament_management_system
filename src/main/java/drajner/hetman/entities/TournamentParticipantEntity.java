@@ -1,6 +1,7 @@
 package drajner.hetman.entities;
 
 import drajner.hetman.services.CompetitorStatus;
+import drajner.hetman.services.Person;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,5 +42,40 @@ public class TournamentParticipantEntity {
             inverseJoinColumns=@JoinColumn(name="groupId")
     )
     List<GroupEntity> groupParticipations;
+
+
+    public TournamentParticipantEntity(Person person){
+        this.name = person.getName();
+        this.surname = person.getSurname();
+        this.club = person.getTeamName();
+        this.status = CompetitorStatus.COMPETING;
+        this.score = 0;
+        this.wins = 0;
+        this.doubles = 0;
+        this.cards = 0;
+        this.ranking = 0;
+    }
+
+    public String getFullName(){return (name + " " + surname);}
+
+    public void addScore(float score) {
+        this.score += score;
+    }
+
+    public void addWin() {
+        this.wins += 1;
+    }
+
+    public void disqualify(){
+        this.status = CompetitorStatus.DISQUALIFIED;
+    }
+
+    public void addDoubles(float doubles){
+        this.doubles = doubles;
+    }
+
+    public void addCards(int cards){
+        this.cards += cards;
+    }
 
 }

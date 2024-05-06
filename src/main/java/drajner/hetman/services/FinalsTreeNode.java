@@ -32,7 +32,7 @@ public class FinalsTreeNode {
                     else nodeFight.setFirstParticipant(firstChildNode.getNodeFight().getWinner());
                 }
                 secondChildNode.fillNode();
-                if (secondChildNode.getNodeFight().getStatus() == FightStatus.FINISHED || firstChildNode.getNodeFight().getStatus() == FightStatus.EVALUATED) {
+                if (secondChildNode.getNodeFight().getStatus() == FightStatus.FINISHED || secondChildNode.getNodeFight().getStatus() == FightStatus.EVALUATED) {
                     secondChildNode.getNodeFight().evaluateFight(1);
                     if (!reverted) nodeFight.setSecondParticipant(secondChildNode.getNodeFight().findLoser());
                     else nodeFight.setSecondParticipant(secondChildNode.getNodeFight().getWinner());

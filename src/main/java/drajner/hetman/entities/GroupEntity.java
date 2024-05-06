@@ -1,9 +1,11 @@
 package drajner.hetman.entities;
 
+import drajner.hetman.services.TournamentParticipant;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,6 +30,14 @@ public class GroupEntity {
 
     float modifier;
 
+    public GroupEntity(){
+        groupParticipants = new ArrayList<>();
+        groupFights = new ArrayList<>();
+    }
 
+    public GroupEntity(ArrayList<TournamentParticipantEntity> groupParticipants){
+        this.groupParticipants = groupParticipants;
+        this.fights = new ArrayList<>();
+    }
 
 }

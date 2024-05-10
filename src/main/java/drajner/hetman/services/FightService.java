@@ -18,10 +18,14 @@ public class FightService {
 
     static TournamentParticipantsRepo tournamentParticipantsRepo;
 
-    public static void evaluateFight(Long id, float modifier) throws UnfinishedFightException{
-        Optional<FightEntity> search = fightRepo.findById(id);
+    public static FightEntity searchForFight(Long fightId){
+        Optional<FightEntity> search = fightRepo.findById(fightId);
         if (search.isEmpty()) throw new NoSuchElementException("No fight of this ID exists");
-        FightEntity selectedFight = search.get();
+        return search.get();
+    }
+
+    public static void evaluateFight(Long id, float modifier) throws UnfinishedFightException{
+        FightEntity selectedFight = searchForFight(id);
         evaluateFight(selectedFight, modifier);
     }
 
@@ -57,5 +61,27 @@ public class FightService {
         participant.addCards(cards);
         tournamentParticipantsRepo.save(participant);
         log.info(String.format("Scores added to '%s' ranking.", participant.getName()));
+    }
+
+    public void replaceFight(Long fightId, FightEntity fight){
+
+        FightEntity editedFight = searchForFight(fightId);
+        editedFight.setFirstParticipant(fight.getFirstParticipant());
+        editedFight.setSecondParticipant(fight.getSecondParticipant());
+        editedFight.setFirstParticipantPoints(fight.getFirstParticipantPoints());
+        editedFight.setSecondParticipantPoints(fight.getSecondParticipantPoints());
+        editedFight.setFirstParticipantCards(fight.getFirstParticipantCards());
+        editedFight.setSecondParticipantCards(fight.getSecondParticipantCards());
+        editedFight.setDoubles(fight.getDoubles());
+        editedFight.setStatus(fight.getStatus());
+        fightRepo.save(editedFight);
+        log.info(String.format("Editied fight '%s'.", fightId));
+    }
+
+    public void deleteFight(Long fightId){
+
+        fightRepo.deleteById(fightId);
+
+        log.info(String.format("Removing '%s' fight.", fightId));
     }
 }

@@ -30,6 +30,8 @@ public class GroupService {
         return search.get();
     }
 
+
+
     public void autoGenerateFights(Long groupId) throws WrongAmountException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
@@ -110,30 +112,5 @@ public class GroupService {
 
         log.info(String.format("Removing '%s' from group.", participant.getName()));
     }
-
-    public void deleteFight(Long groupId, int fightNumber){
-
-        GroupEntity selectedGroup = searchForGroup(groupId);
-
-        Optional<TournamentParticipantEntity> search = tournamentParticipantsRepo.findById(participantId);
-        if (search.isEmpty()) throw new NoSuchElementException("No participant of this ID exists");
-        TournamentParticipantEntity participant = search.get();
-
-        if(selectedGroup.getGroupParticipants().contains(participant)){
-            selectedGroup.getGroupParticipants().remove(participant);
-            groupRepo.save(selectedGroup);
-        }else{
-            throw new NoSuchElementException("This participant does not belong to this group.");
-        }
-
-        log.info(String.format("Removing fight between '%s' and '%s' from group.", getFight(fightNumber).getFirstParticipant().getName(), getFight(fightNumber).getSecondParticipant().getName()));
-        fights.remove(fightNumber);
-    }
-
-    public void replaceFight(int fightNumber, Fight fight){
-        log.info(String.format("Replacing fight between '%s' and '%s' within group.", getFight(fightNumber).getFirstParticipant().getName(), getFight(fightNumber).getSecondParticipant().getName()));
-        fights.set(fightNumber, fight);
-    }
-
 
 }

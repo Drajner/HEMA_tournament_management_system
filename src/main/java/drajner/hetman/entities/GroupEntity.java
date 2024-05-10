@@ -37,7 +37,7 @@ public class GroupEntity {
 
     public GroupEntity(ArrayList<TournamentParticipantEntity> groupParticipants){
         this.groupParticipants = groupParticipants;
-        this.fights = new ArrayList<>();
+        this.groupFights = new ArrayList<>();
     }
 
 }

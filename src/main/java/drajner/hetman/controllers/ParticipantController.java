@@ -1,53 +1,95 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.TournamentsSingleton;
-import drajner.hetman.services.CompetitorStatus;
-import drajner.hetman.services.FightStatus;
-import drajner.hetman.services.Person;
-import drajner.hetman.services.TournamentParticipant;
+import drajner.hetman.entities.TournamentParticipantEntity;
+import drajner.hetman.repositories.TournamentParticipantsRepo;
+import drajner.hetman.services.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}/participants")
+@RequestMapping("participants/tournament/{tournamentId}")
 @Log4j2
 public class ParticipantController {
 
+    @Autowired
+    TournamentParticipantsRepo tournamentParticipantsRepo;
+
     @GetMapping("/get")
-    public ArrayList<TournamentParticipant> getTournamentParticipants(@PathVariable int tournamentNumber){
-        return TournamentsSingleton.get(tournamentNumber).getParticipants();
+    public ResponseEntity<Object> getTournamentParticipants(@PathVariable Long tournamentId){
+        try{
+            return ResponseEntity.ok(tournamentParticipantsRepo.findByTournamentId(tournamentId));
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     @PostMapping("/add")
-    public void addTournamentParticipant(@RequestBody Person person, @PathVariable int tournamentNumber){
-        TournamentsSingleton.get(tournamentNumber).addParticipant(person);
+    public ResponseEntity<Object> addTournamentParticipant(@RequestBody Person person, @PathVariable Long tournamentId){
+        try{
+            TournamentService.addParticipant(tournamentId, person);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @DeleteMapping("/delete/{number}")
-    public void deleteParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).removeParticipant(number);
+    @DeleteMapping("/delete/{participantId}")
+    public ResponseEntity<Object> deleteParticipant(@PathVariable Long tournamentId, @PathVariable Long participantId){
+        try{
+            TournamentService.removeParticipant(participantId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @PostMapping("/replace/{number}")
-    public void addTournamentParticipant(@RequestBody TournamentParticipant participant, @PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).replaceParticipant(number, participant);
+    @PostMapping("/replace")
+    public ResponseEntity<Object> replaceParticipant(@RequestBody TournamentParticipantEntity participant,
+                                                     @PathVariable Long tournamentId){
+        try{
+            TournamentService.replaceParticipant(participant);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @PostMapping("/disqualify/{number}")
-    public void disqualifyParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getParticipant(number).disqualify();
+    @PostMapping("/disqualify/{participantId}")
+    public ResponseEntity<Object> disqualifyParticipant(@PathVariable Long tournamentNumber,
+                                                        @PathVariable Long participantId){
+        try{
+            ParticipantService.disqualify(participantId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @PostMapping("/compete/{number}")
-    public void competeParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getParticipant(number).setStatus(CompetitorStatus.COMPETING);
+    @PostMapping("/compete/{participantId}")
+    public ResponseEntity<Object> competeParticipant(@PathVariable Long tournamentNumber,
+                                                     @PathVariable Long participantId){
+        try{
+            ParticipantService.compete(participantId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @PostMapping("/eliminate/{number}")
-    public void eliminateParticipant(@PathVariable int tournamentNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getParticipant(number).setStatus(CompetitorStatus.ELIMINATED);
+    @PostMapping("/eliminate/{participantId}")
+    public ResponseEntity<Object> eliminateParticipant(@PathVariable Long tournamentNumber,
+                                                       @PathVariable Long participantId){
+        try{
+            ParticipantService.eliminate(participantId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
 }

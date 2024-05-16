@@ -1,51 +1,56 @@
 package drajner.hetman.controllers;
 
+import drajner.hetman.entities.FightEntity;
 import drajner.hetman.TournamentsSingleton;
+import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.requests.FightReport;
 import drajner.hetman.services.Fight;
+import drajner.hetman.services.FightService;
+import drajner.hetman.services.GroupService;
 import drajner.hetman.services.TournamentParticipant;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("tournaments/{tournamentNumber}/groups/{groupNumber}/fights")
+@RequestMapping("fights")
 @Log4j2
 public class FightController {
 
-    @GetMapping("/get")
-    public ArrayList<Fight> getFights(@PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        return TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getFights();
+    @Autowired
+    FightRepo fightRepo;
+
+    @GetMapping("/get/{groupId}")
+    public ResponseEntity<Object> getFights(@PathVariable Long groupId){
+        try {
+            return ResponseEntity.ok(fightRepo.findByGroupId(groupId));
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @PostMapping("/add")
-    public void addFight(@RequestBody FightReport fightReport, @PathVariable int tournamentNumber, @PathVariable int groupNumber){
-        TournamentParticipant firstParticipant = TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipant(fightReport.getFirstParticipantNumber());
-        TournamentParticipant secondParticipant = TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipant(fightReport.getSecondParticipantNumber());
-        Fight newFight = new Fight(firstParticipant, secondParticipant);
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).addFight(newFight);
+    @DeleteMapping("delete/{fightId}")
+    public ResponseEntity<Object> deleteFight(@PathVariable Long fightId){
+        try {
+            FightService.deleteFight(fightId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
-    @DeleteMapping("delete/{number}")
-    public void deleteFight(@PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).deleteFight(number);
-    }
+    @PostMapping("replace/{fightId}")
+    public ResponseEntity<Object> replaceFight(@RequestBody FightEntity fight, @PathVariable Long fightId){
 
-    @PostMapping("replace/{number}")
-    public void replaceFight(@RequestBody FightReport fightReport, @PathVariable int tournamentNumber, @PathVariable int groupNumber, @PathVariable int number){
-        TournamentParticipant firstParticipant = TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipant(fightReport.getFirstParticipantNumber());
-        TournamentParticipant secondParticipant = TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipant(fightReport.getSecondParticipantNumber());
-        TournamentParticipant winner = TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).getGroupParticipant(fightReport.getWinnerNumber());
-
-        Fight newFight = new Fight(firstParticipant,
-                                   secondParticipant,
-                                   fightReport.getFirstParticipantPoints(),
-                                   fightReport.getSecondParticipantPoints(),
-                                   fightReport.getDoubles(),
-                                   fightReport.getStatus(),
-                                   winner);
-        TournamentsSingleton.get(tournamentNumber).getGroup(groupNumber).replaceFight(number, newFight);
+        try {
+            FightService.replaceFight(fightId, fight);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
 

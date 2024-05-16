@@ -21,11 +21,14 @@ public class TournamentService {
     static GroupRepo groupRepo;
     static FinalsTreeNodeRepo finalsTreeNodeRepo;
 
-    static public void addParticipant(Long tournamentId, Person person){
+    static public TournamentEntity searchForTournament(Long tournamentId){
         Optional<TournamentEntity> selectedTournamentSearch = tournamentRepo.findById(tournamentId);
         if (selectedTournamentSearch.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
+        return selectedTournamentSearch.get();
+    }
 
-        TournamentEntity selectedTournament = selectedTournamentSearch.get();
+    static public void addParticipant(Long tournamentId, Person person){
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
         TournamentParticipantEntity newParticipant = new TournamentParticipantEntity(person);
         selectedTournament.getParticipants().add(newParticipant);
         tournamentRepo.save(selectedTournament);
@@ -54,9 +57,7 @@ public class TournamentService {
     }
 
     static public void addGroupPool(Long tournamentId){
-        Optional<TournamentEntity> selectedTournamentSearch = tournamentRepo.findById(tournamentId);
-        if (selectedTournamentSearch.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
-        TournamentEntity selectedTournament = selectedTournamentSearch.get();
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
         GroupEntity newGroup = new GroupEntity();
         selectedTournament.getGroups().add(newGroup);
         tournamentRepo.save(selectedTournament);
@@ -104,9 +105,7 @@ public class TournamentService {
 
         if(size < 4) throw new WrongAmountException("There need to be 4 or more participants in finals");
 
-        Optional<TournamentEntity> selectedTournamentSearch = tournamentRepo.findById(tournamentId);
-        if (selectedTournamentSearch.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
-        TournamentEntity selectedTournament = selectedTournamentSearch.get();
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
 
         List<TournamentParticipantEntity> groupWinners = getGroupWinners(selectedTournament, size);
 
@@ -124,10 +123,8 @@ public class TournamentService {
         log.info(String.format("Created finals for '%s' tournament.", selectedTournament.getName()));
     }
 
-    public void evaluateFinals(Long tournamentId) throws UnfinishedFightException {
-        Optional<TournamentEntity> selectedTournamentSearch = tournamentRepo.findById(tournamentId);
-        if (selectedTournamentSearch.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
-        TournamentEntity selectedTournament = selectedTournamentSearch.get();
+    static public void evaluateFinals(Long tournamentId) throws UnfinishedFightException {
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
         if(selectedTournament.getFinalFight() != null && selectedTournament.getThirdPlaceFight() != null){
             log.info("Evaluating current tree.");
             FinalsTreeNodeService.fillNode(selectedTournament.getFinalFight());
@@ -144,9 +141,7 @@ public class TournamentService {
 
     static public void createGroups(Long tournamentId, int numberOfGroups) throws WrongAmountException{
 
-        Optional<TournamentEntity> selectedTournamentSearch = tournamentRepo.findById(tournamentId);
-        if (selectedTournamentSearch.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
-        TournamentEntity selectedTournament = selectedTournamentSearch.get();
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
 
         ArrayList<GroupEntity> newGroups = new ArrayList<>();
         if(numberOfGroups >= (selectedTournament.getParticipants().size() / 2)) throw new WrongAmountException("Too many groups for participants amount");
@@ -173,4 +168,11 @@ public class TournamentService {
         log.info(String.format("Created groups for '%s' tournament.", selectedTournament.getName()));
     }
 
+    static public List<FinalsTreeNodeEntity> getFinals(Long tournamentId){
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
+        List<FinalsTreeNodeEntity> finalsNodes = new ArrayList<>();
+        finalsNodes.add(selectedTournament.getFinalFight());
+        finalsNodes.add(selectedTournament.getThirdPlaceFight());
+        return finalsNodes;
+    }
 }

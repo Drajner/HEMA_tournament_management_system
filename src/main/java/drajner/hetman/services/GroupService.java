@@ -19,20 +19,17 @@ import java.util.Optional;
 @Log4j2
 public class GroupService {
 
-    GroupRepo groupRepo;
-    FightRepo fightRepo;
+    static GroupRepo groupRepo;
+    static FightRepo fightRepo;
+    static TournamentParticipantsRepo tournamentParticipantsRepo;
 
-    TournamentParticipantsRepo tournamentParticipantsRepo;
-
-    public GroupEntity searchForGroup(Long groupId){
+    public static GroupEntity searchForGroup(Long groupId){
         Optional<GroupEntity> search = groupRepo.findById(groupId);
         if (search.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
         return search.get();
     }
 
-
-
-    public void autoGenerateFights(Long groupId) throws WrongAmountException {
+    public static void autoGenerateFights(Long groupId) throws WrongAmountException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -59,7 +56,7 @@ public class GroupService {
         log.info("Auto generated group fights.");
     }
 
-    public void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {
+    public static void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -77,7 +74,7 @@ public class GroupService {
         log.info("Evaluated group.");
     }
 
-    public void addFight(Long groupId, FightEntity fight){
+    public static void addFight(Long groupId, FightEntity fight){
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -86,22 +83,26 @@ public class GroupService {
         log.info(String.format("Added fight between '%s' and '%s' to group.", fight.getFirstParticipant().getName(), fight.getSecondParticipant().getName()));
     }
 
-    public void addParticipant(Long groupId, TournamentParticipantEntity participant) throws DuplicateException {
+    public static void addParticipant(Long groupId, Long participantsId) throws DuplicateException{
+        TournamentParticipantEntity participant = ParticipantService.searchForParticipant(participantsId);
+        addParticipant(groupId, participant);
+    }
+
+    public static void addParticipant(Long groupId, TournamentParticipantEntity participant) throws DuplicateException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
         selectedGroup.getGroupParticipants().add(participant);
         groupRepo.save(selectedGroup);
+        tournamentParticipantsRepo.save(participant);
         log.info(String.format("Added '%s' to group.", participant.getName()));
     }
 
-    public void deleteParticipant(Long groupId, Long participantId){
+    public static void deleteParticipant(Long groupId, Long participantId){
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
-        Optional<TournamentParticipantEntity> search = tournamentParticipantsRepo.findById(participantId);
-        if (search.isEmpty()) throw new NoSuchElementException("No participant of this ID exists");
-        TournamentParticipantEntity participant = search.get();
+        TournamentParticipantEntity participant = ParticipantService.searchForParticipant(participantId);
 
         if(selectedGroup.getGroupParticipants().contains(participant)){
             selectedGroup.getGroupParticipants().remove(participant);
@@ -112,5 +113,16 @@ public class GroupService {
 
         log.info(String.format("Removing '%s' from group.", participant.getName()));
     }
+
+    public static void deleteGroup(Long groupId){
+        GroupEntity selectedGroup = searchForGroup(groupId);
+
+        for (FightEntity fight: selectedGroup.getGroupFights()) {
+            fightRepo.deleteById(fight.getId());
+        }
+        groupRepo.deleteById(groupId);
+    }
+
+
 
 }

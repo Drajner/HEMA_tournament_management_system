@@ -63,7 +63,7 @@ public class FightService {
         log.info(String.format("Scores added to '%s' ranking.", participant.getName()));
     }
 
-    public void replaceFight(Long fightId, FightEntity fight){
+    public static void replaceFight(Long fightId, FightEntity fight){
 
         FightEntity editedFight = searchForFight(fightId);
         editedFight.setFirstParticipant(fight.getFirstParticipant());
@@ -78,7 +78,7 @@ public class FightService {
         log.info(String.format("Editied fight '%s'.", fightId));
     }
 
-    public void deleteFight(Long fightId){
+    public static void deleteFight(Long fightId){
 
         fightRepo.deleteById(fightId);
 

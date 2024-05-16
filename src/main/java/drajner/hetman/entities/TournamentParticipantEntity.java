@@ -70,6 +70,10 @@ public class TournamentParticipantEntity {
         this.status = CompetitorStatus.DISQUALIFIED;
     }
 
+    public void compete(){this.status = CompetitorStatus.COMPETING;}
+
+    public void eliminate(){this.status = CompetitorStatus.ELIMINATED;}
+
     public void addDoubles(float doubles){
         this.doubles = doubles;
     }

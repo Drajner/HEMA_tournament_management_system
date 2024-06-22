@@ -7,17 +7,25 @@ import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.repositories.FinalsTreeNodeRepo;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Service
 @Log4j2
 public class FinalsTreeNodeService {
-    static FinalsTreeNodeRepo finalsTreeNodeRepo;
 
-    public static void fillNode(FinalsTreeNodeEntity selectedNode) throws UnfinishedFightException {
+    @Autowired
+    FinalsTreeNodeRepo finalsTreeNodeRepo;
+
+    @Autowired
+    FightService fightService;
+
+    public void fillNode(FinalsTreeNodeEntity selectedNode) throws UnfinishedFightException {
 
 
         if(selectedNode.getFight().getStatus() != FightStatus.EVALUATED) {
@@ -27,7 +35,7 @@ public class FinalsTreeNodeService {
                     FinalsTreeNodeEntity firstChildNode = selectedNode.getFirstChildNode();
                     fillNode(selectedNode.getFirstChildNode());
                     if (firstChildNode.getFight().getStatus() == FightStatus.FINISHED || firstChildNode.getFight().getStatus() == FightStatus.EVALUATED) {
-                        FightService.evaluateFight(firstChildNode.getFight(), 1);
+                        fightService.evaluateFight(firstChildNode.getFight(), 1);
                         if (!selectedNode.isReverted()) selectedNode.getFight().setFirstParticipant(firstChildNode.getFight().findLoser());
                         else selectedNode.getFight().setFirstParticipant(firstChildNode.getFight().getWinner());
                     }
@@ -35,11 +43,11 @@ public class FinalsTreeNodeService {
                 }
 
 
-                if(selectedNode.getFirstChildNode() != null){
+                if(selectedNode.getSecondChildNode() != null){
                     FinalsTreeNodeEntity secondChildNode = selectedNode.getSecondChildNode();
                     fillNode(selectedNode.getSecondChildNode());
                     if (secondChildNode.getFight().getStatus() == FightStatus.FINISHED || secondChildNode.getFight().getStatus() == FightStatus.EVALUATED) {
-                        FightService.evaluateFight(secondChildNode.getFight(), 1);
+                        fightService.evaluateFight(secondChildNode.getFight(), 1);
                         if (!selectedNode.isReverted()) selectedNode.getFight().setSecondParticipant(secondChildNode.getFight().findLoser());
                         else selectedNode.getFight().setSecondParticipant(secondChildNode.getFight().getWinner());
                     }
@@ -47,13 +55,13 @@ public class FinalsTreeNodeService {
                 }
 
             } else if(selectedNode.getFight().getStatus() == FightStatus.FINISHED){
-                FightService.evaluateFight(selectedNode.getFight(), 1);
+                fightService.evaluateFight(selectedNode.getFight(), 1);
             }
             finalsTreeNodeRepo.save(selectedNode);
         }
     }
 
-    public static void setUpTree(FinalsTreeNodeEntity node, List<TournamentParticipantEntity> nodeParticipants){
+    public void setUpTree(FinalsTreeNodeEntity node, List<TournamentParticipantEntity> nodeParticipants){
         if(nodeParticipants.size() == 2){
             node.setFight(new FightEntity(nodeParticipants.get(0), nodeParticipants.get(1)));
             finalsTreeNodeRepo.save(node);

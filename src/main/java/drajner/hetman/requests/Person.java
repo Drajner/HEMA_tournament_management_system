@@ -1,4 +1,4 @@
-package drajner.hetman.services;
+package drajner.hetman.requests;
 
 import lombok.Getter;
 import lombok.Setter;

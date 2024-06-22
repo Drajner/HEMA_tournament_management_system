@@ -11,25 +11,36 @@ import drajner.hetman.repositories.GroupRepo;
 import drajner.hetman.entities.FightEntity;
 import drajner.hetman.repositories.TournamentParticipantsRepo;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Service
 @Log4j2
 public class GroupService {
 
-    static GroupRepo groupRepo;
-    static FightRepo fightRepo;
-    static TournamentParticipantsRepo tournamentParticipantsRepo;
+    @Autowired
+    GroupRepo groupRepo;
+    @Autowired
+    FightRepo fightRepo;
+    @Autowired
+    TournamentParticipantsRepo tournamentParticipantsRepo;
 
-    public static GroupEntity searchForGroup(Long groupId){
+    @Autowired
+    ParticipantService participantService;
+    @Autowired
+    FightService fightService;
+
+    public GroupEntity searchForGroup(Long groupId){
         Optional<GroupEntity> search = groupRepo.findById(groupId);
         if (search.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
         return search.get();
     }
 
-    public static void autoGenerateFights(Long groupId) throws WrongAmountException {
+    public void autoGenerateFights(Long groupId) throws WrongAmountException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -42,8 +53,11 @@ public class GroupService {
                 TournamentParticipantEntity firstFighter = tempParticipantList.get(i);
                 TournamentParticipantEntity secondFighter = tempParticipantList.get(groupSize - 1 - i);
                 FightEntity fightInGroup = new FightEntity(firstFighter, secondFighter);
+                fightInGroup.setGroup(selectedGroup);
                 selectedGroup.getGroupFights().add(fightInGroup);
                 fightRepo.save(fightInGroup);
+                tournamentParticipantsRepo.save(firstFighter);
+                tournamentParticipantsRepo.save(secondFighter);
             }
 
             TournamentParticipantEntity lastFighter = tempParticipantList.get(groupSize - 1);
@@ -56,7 +70,7 @@ public class GroupService {
         log.info("Auto generated group fights.");
     }
 
-    public static void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {
+    public void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -64,7 +78,7 @@ public class GroupService {
         for(FightEntity fight: selectedGroup.getGroupFights()){
             if(fight.getStatus() == FightStatus.FINISHED){
 
-                FightService.evaluateFight(fight, modifier);
+                fightService.evaluateFight(fight, modifier);
                 fight.setStatus(FightStatus.EVALUATED);
                 fightRepo.save(fight);
 
@@ -74,7 +88,7 @@ public class GroupService {
         log.info("Evaluated group.");
     }
 
-    public static void addFight(Long groupId, FightEntity fight){
+    public void addFight(Long groupId, FightEntity fight){
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
@@ -83,30 +97,33 @@ public class GroupService {
         log.info(String.format("Added fight between '%s' and '%s' to group.", fight.getFirstParticipant().getName(), fight.getSecondParticipant().getName()));
     }
 
-    public static void addParticipant(Long groupId, Long participantsId) throws DuplicateException{
-        TournamentParticipantEntity participant = ParticipantService.searchForParticipant(participantsId);
+    public void addParticipant(Long groupId, Long participantsId) throws DuplicateException{
+        TournamentParticipantEntity participant = participantService.searchForParticipant(participantsId);
         addParticipant(groupId, participant);
     }
 
-    public static void addParticipant(Long groupId, TournamentParticipantEntity participant) throws DuplicateException {
+    public void addParticipant(Long groupId, TournamentParticipantEntity participant) throws DuplicateException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
         selectedGroup.getGroupParticipants().add(participant);
+        participant.getGroupParticipations().add(selectedGroup);
         groupRepo.save(selectedGroup);
         tournamentParticipantsRepo.save(participant);
         log.info(String.format("Added '%s' to group.", participant.getName()));
     }
 
-    public static void deleteParticipant(Long groupId, Long participantId){
+    public void deleteParticipant(Long groupId, Long participantId){
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 
-        TournamentParticipantEntity participant = ParticipantService.searchForParticipant(participantId);
+        TournamentParticipantEntity participant = participantService.searchForParticipant(participantId);
 
         if(selectedGroup.getGroupParticipants().contains(participant)){
             selectedGroup.getGroupParticipants().remove(participant);
+            participant.getGroupParticipations().remove(selectedGroup);
             groupRepo.save(selectedGroup);
+            tournamentParticipantsRepo.save(participant);
         }else{
             throw new NoSuchElementException("This participant does not belong to this group.");
         }
@@ -114,7 +131,7 @@ public class GroupService {
         log.info(String.format("Removing '%s' from group.", participant.getName()));
     }
 
-    public static void deleteGroup(Long groupId){
+    public void deleteGroup(Long groupId){
         GroupEntity selectedGroup = searchForGroup(groupId);
 
         for (FightEntity fight: selectedGroup.getGroupFights()) {

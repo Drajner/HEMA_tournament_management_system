@@ -1,19 +1,13 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.entities.FightEntity;
-import drajner.hetman.TournamentsSingleton;
 import drajner.hetman.repositories.FightRepo;
-import drajner.hetman.requests.FightReport;
-import drajner.hetman.services.Fight;
+import drajner.hetman.requests.ErrorResponse;
 import drajner.hetman.services.FightService;
-import drajner.hetman.services.GroupService;
-import drajner.hetman.services.TournamentParticipant;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("fights")
@@ -23,22 +17,27 @@ public class FightController {
     @Autowired
     FightRepo fightRepo;
 
+    @Autowired
+    FightService fightService;
+
     @GetMapping("/get/{groupId}")
     public ResponseEntity<Object> getFights(@PathVariable Long groupId){
         try {
-            return ResponseEntity.ok(fightRepo.findByGroupId(groupId));
+            return ResponseEntity.ok(fightRepo.findByGroupGroupId(groupId));
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 
     @DeleteMapping("delete/{fightId}")
     public ResponseEntity<Object> deleteFight(@PathVariable Long fightId){
         try {
-            FightService.deleteFight(fightId);
+            fightService.deleteFight(fightId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 
@@ -46,11 +45,11 @@ public class FightController {
     public ResponseEntity<Object> replaceFight(@RequestBody FightEntity fight, @PathVariable Long fightId){
 
         try {
-            FightService.replaceFight(fightId, fight);
+            fightService.replaceFight(fightId, fight);
             return ResponseEntity.ok().build();
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(e);
-        }
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);        }
     }
 
 

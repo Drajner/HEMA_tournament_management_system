@@ -1,8 +1,8 @@
 package drajner.hetman.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.services.FightStatus;
-import drajner.hetman.services.TournamentParticipant;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +38,7 @@ public class FightEntity {
     @JoinColumn(name = "winnerId")
     TournamentParticipantEntity winner;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "groupId")
     GroupEntity group;

@@ -1,6 +1,7 @@
 package drajner.hetman.entities;
 
-import drajner.hetman.services.TournamentParticipant;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +19,12 @@ public class GroupEntity {
     @GeneratedValue
     Long groupId;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="tournamentId", nullable = false)
     TournamentEntity tournament;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "groupParticipations")
     List<TournamentParticipantEntity> groupParticipants;
 
@@ -37,6 +40,12 @@ public class GroupEntity {
 
     public GroupEntity(ArrayList<TournamentParticipantEntity> groupParticipants){
         this.groupParticipants = groupParticipants;
+        this.groupFights = new ArrayList<>();
+    }
+
+    public GroupEntity(TournamentEntity tournament){
+        this.tournament = tournament;
+        this.groupParticipants = new ArrayList<>();
         this.groupFights = new ArrayList<>();
     }
 

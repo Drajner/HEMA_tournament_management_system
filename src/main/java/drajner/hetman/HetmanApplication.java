@@ -1,8 +1,6 @@
 package drajner.hetman;
 
-import drajner.hetman.errors.DuplicateException;
-import drajner.hetman.services.Person;
-import drajner.hetman.services.Tournament;
+import drajner.hetman.requests.Person;
 import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +11,7 @@ public class HetmanApplication {
 	@SneakyThrows
 	public static void main(String[] args) {
 
+		/*
 		Tournament t1 = new Tournament("Turniej dupy");
 		Tournament t2 = new Tournament("Drugi turniej dupy");
 		Person p1 = new Person("jan", "pawel", "aaa");
@@ -27,10 +26,11 @@ public class HetmanApplication {
 		t1.addParticipant(p4);
 		t1.addParticipant(p5);
 		t1.addParticipant(p6);
-		TournamentsSingleton.add(t1);
-		TournamentsSingleton.add(t2);
+		ReportsSingleton.add(t1);
+		ReportsSingleton.add(t2);
 		t1.createLadder(6);
 		t1.getFinals().autoGenerateFights();
+		 */
 		SpringApplication.run(HetmanApplication.class, args);
 	}
 

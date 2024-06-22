@@ -1,6 +1,6 @@
 package drajner.hetman.controllers;
 
-import drajner.hetman.services.Person;
+import drajner.hetman.requests.Person;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 

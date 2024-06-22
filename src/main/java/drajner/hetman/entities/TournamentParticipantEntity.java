@@ -1,7 +1,9 @@
 package drajner.hetman.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import drajner.hetman.services.CompetitorStatus;
-import drajner.hetman.services.Person;
+import drajner.hetman.requests.Person;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,10 +33,13 @@ public class TournamentParticipantEntity {
     int cards;
     int ranking;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="tournamentId", nullable=false)
-    TournamentEntity tournamentParticipation;
+    TournamentEntity tournament;
 
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name="groupParticipation",
@@ -43,6 +48,8 @@ public class TournamentParticipantEntity {
     )
     List<GroupEntity> groupParticipations;
 
+
+    public TournamentParticipantEntity(){}
 
     public TournamentParticipantEntity(Person person){
         this.name = person.getName();

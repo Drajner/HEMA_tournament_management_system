@@ -48,7 +48,7 @@ public class GroupService {
         ArrayList<TournamentParticipantEntity> tempParticipantList = new ArrayList<>(selectedGroup.getGroupParticipants());
         int roundAmount = groupSize;
         if(roundAmount / 2 == 0) roundAmount -= 1;
-        for (int round = 0; round < (roundAmount - 1); round++) {
+        for (int round = 0; round < roundAmount; round++) {
             for (int i = 0; i < (groupSize / 2); i++) {
                 TournamentParticipantEntity firstFighter = tempParticipantList.get(i);
                 TournamentParticipantEntity secondFighter = tempParticipantList.get(groupSize - 1 - i);
@@ -61,10 +61,10 @@ public class GroupService {
             }
 
             TournamentParticipantEntity lastFighter = tempParticipantList.get(groupSize - 1);
-            for (int i = groupSize - 1; i > 1; i--) {
+            for (int i = groupSize - 1; i > 0; i--) {
                 tempParticipantList.set(i, tempParticipantList.get(i - 1));
             }
-            tempParticipantList.set(1, lastFighter);
+            tempParticipantList.set(0, lastFighter);
         }
         groupRepo.save(selectedGroup);
         log.info("Auto generated group fights.");

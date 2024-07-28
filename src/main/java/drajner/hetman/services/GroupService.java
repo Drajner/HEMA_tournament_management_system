@@ -43,15 +43,16 @@ public class GroupService {
     public void autoGenerateFights(Long groupId) throws WrongAmountException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
-
-        int groupSize = selectedGroup.getGroupParticipants().size();
         ArrayList<TournamentParticipantEntity> tempParticipantList = new ArrayList<>(selectedGroup.getGroupParticipants());
-        int roundAmount = groupSize;
-        if(roundAmount / 2 == 0) roundAmount -= 1;
-        for (int round = 0; round < roundAmount; round++) {
+
+        if(selectedGroup.getGroupParticipants().size() % 2 == 1) tempParticipantList.add(null);
+        int groupSize = tempParticipantList.size();
+
+        for (int round = 0; round < groupSize -1; round++) {
             for (int i = 0; i < (groupSize / 2); i++) {
                 TournamentParticipantEntity firstFighter = tempParticipantList.get(i);
                 TournamentParticipantEntity secondFighter = tempParticipantList.get(groupSize - 1 - i);
+                if(firstFighter == null || secondFighter == null) continue;
                 FightEntity fightInGroup = new FightEntity(firstFighter, secondFighter);
                 fightInGroup.setGroup(selectedGroup);
                 selectedGroup.getGroupFights().add(fightInGroup);
@@ -60,14 +61,9 @@ public class GroupService {
                 tournamentParticipantsRepo.save(secondFighter);
             }
 
-            TournamentParticipantEntity lastFighter = tempParticipantList.get(groupSize - 1);
-            for (int i = groupSize - 1; i > 0; i--) {
-                tempParticipantList.set(i, tempParticipantList.get(i - 1));
-            }
-            tempParticipantList.set(0, lastFighter);
+            TournamentParticipantEntity swappedFighter = tempParticipantList.remove(1);
+            tempParticipantList.add(swappedFighter);
         }
-        groupRepo.save(selectedGroup);
-        log.info("Auto generated group fights.");
     }
 
     public void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {

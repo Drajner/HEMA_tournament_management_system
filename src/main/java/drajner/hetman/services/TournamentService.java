@@ -4,6 +4,7 @@ import drajner.hetman.entities.FinalsTreeNodeEntity;
 import drajner.hetman.entities.GroupEntity;
 import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.entities.TournamentParticipantEntity;
+import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
 import drajner.hetman.repositories.FinalsTreeNodeRepo;
@@ -117,16 +118,21 @@ public class TournamentService {
         return groupWinners;
     }
 
-    public void createLadder(Long tournamentId, int size) throws WrongAmountException{
+    public void createLadder(Long tournamentId, int size) throws WrongAmountException, OneFinalsException{
 
         if(size < 4) throw new WrongAmountException("There need to be 4 or more participants in finals");
 
         TournamentEntity selectedTournament = searchForTournament(tournamentId);
+        if(selectedTournament.getFinalFight() == null) throw new OneFinalsException("Ladder is already created. You need to clear existing ladder to create new one.");
 
         List<TournamentParticipantEntity> groupWinners = getGroupWinners(selectedTournament, size);
 
         selectedTournament.setFinalFight(new FinalsTreeNodeEntity());
+        finalsTreeNodeRepo.save(selectedTournament.getFinalFight());
+        tournamentRepo.save(selectedTournament);
         selectedTournament.setThirdPlaceFight(new FinalsTreeNodeEntity(true));
+        finalsTreeNodeRepo.save(selectedTournament.getThirdPlaceFight());
+        tournamentRepo.save(selectedTournament);
 
         finalsTreeNodeService.setUpTree(selectedTournament.getFinalFight(), groupWinners);
         finalsTreeNodeRepo.save(selectedTournament.getFinalFight());
@@ -160,17 +166,14 @@ public class TournamentService {
         TournamentEntity selectedTournament = searchForTournament(tournamentId);
 
         ArrayList<GroupEntity> newGroups = new ArrayList<>();
-        if(numberOfGroups >= (selectedTournament.getParticipants().size() / 2)) throw new WrongAmountException("Too many groups for participants amount");
+        if(numberOfGroups > (selectedTournament.getParticipants().size() / 2)) throw new WrongAmountException("Too many groups for participants amount");
         for(int i=0;i<numberOfGroups;i++){
             newGroups.add(groupRepo.save(new GroupEntity(selectedTournament)));
         }
-        TournamentParticipantEntity tpToBeAdded;
         for(int i=0; i < selectedTournament.getParticipants().size();){
             for(GroupEntity group: newGroups){
                 try{
-                    //tpToBeAdded = selectedTournament.getParticipants().get(i);
                     group.getGroupParticipants().add(selectedTournament.getParticipants().get(i));
-                    //tpToBeAdded.getGroupParticipations().add(group);
                     selectedTournament.getParticipants().get(i).getGroupParticipations().add(group);
                     groupRepo.save(group);
                     i++;

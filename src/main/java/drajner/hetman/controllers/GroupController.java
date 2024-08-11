@@ -3,6 +3,7 @@ package drajner.hetman.controllers;
 import drajner.hetman.entities.FightEntity;
 import drajner.hetman.errors.WrongAmountException;
 import drajner.hetman.repositories.GroupRepo;
+import drajner.hetman.requests.AddFightRequest;
 import drajner.hetman.requests.ErrorResponse;
 import drajner.hetman.services.*;
 import lombok.extern.log4j.Log4j2;
@@ -65,9 +66,9 @@ public class GroupController {
     }
 
     @PostMapping("/addFight/{groupId}")
-    public ResponseEntity<Object> addFight(@RequestBody FightEntity fight, @PathVariable Long groupId){
+    public ResponseEntity<Object> addFight(@RequestBody AddFightRequest addFightRequest, @PathVariable Long groupId){
         try {
-            groupService.addFight(groupId, fight);
+            groupService.addFight(groupId, addFightRequest);
             return ResponseEntity.ok().build();
         }catch(Exception e){
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
@@ -95,8 +96,5 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);        }
 
     }
-
-
-
 
 }

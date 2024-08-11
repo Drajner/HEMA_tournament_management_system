@@ -1,12 +1,9 @@
 package drajner.hetman.requests;
 
-import drajner.hetman.entities.FightEntity;
 import lombok.Getter;
 
 @Getter
-public class FightReport {
-
-    private String username;
+public class FightDetails {
     Long fightId;
     Long firstParticipantId;
     Long secondParticipantId;
@@ -16,5 +13,4 @@ public class FightReport {
     int secondParticipantCards;
     int doubles;
     Long winner;
-
 }

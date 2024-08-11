@@ -1,6 +1,7 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.entities.TournamentEntity;
+import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
 import drajner.hetman.repositories.GroupRepo;
@@ -78,10 +79,10 @@ public class TournamentController {
 
     @PostMapping("/generateGroups/{tournamentId}")
     public ResponseEntity<Object> generateGroups(@RequestBody int numberOfGroups, @PathVariable Long tournamentId) throws WrongAmountException{
-        //try {
+        try {
             tournamentService.createGroups(tournamentId, numberOfGroups);
             return ResponseEntity.ok().build();
-        /*}catch(WrongAmountException e){
+        }catch(WrongAmountException e){
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.badRequest().body(response);
@@ -89,15 +90,15 @@ public class TournamentController {
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
-        }*/
+        }
     }
 
     @PostMapping("/generateLadder/{tournamentId}")
-    public ResponseEntity<Object> generateLadder(@RequestBody int numberOfParticipants, @PathVariable Long tournamentId) throws WrongAmountException{
+    public ResponseEntity<Object> generateLadder(@RequestBody int numberOfParticipants, @PathVariable Long tournamentId) throws WrongAmountException, OneFinalsException {
         try {
             tournamentService.createLadder(tournamentId, numberOfParticipants);
             return ResponseEntity.ok().build();
-        }catch(WrongAmountException e){
+        }catch(WrongAmountException|OneFinalsException e){
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.badRequest().body(response);

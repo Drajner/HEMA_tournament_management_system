@@ -5,6 +5,7 @@ import drajner.hetman.entities.FinalsTreeNodeEntity;
 import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.errors.UnfinishedFightException;
+import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.repositories.FinalsTreeNodeRepo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class FinalsTreeNodeService {
 
     @Autowired
     FinalsTreeNodeRepo finalsTreeNodeRepo;
+
+    @Autowired
+    FightRepo fightRepo;
 
     @Autowired
     FightService fightService;
@@ -64,6 +68,7 @@ public class FinalsTreeNodeService {
     public void setUpTree(FinalsTreeNodeEntity node, List<TournamentParticipantEntity> nodeParticipants){
         if(nodeParticipants.size() == 2){
             node.setFight(new FightEntity(nodeParticipants.get(0), nodeParticipants.get(1)));
+            fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node);
             log.info(String.format("Set up elimination fight for '%s' and '%s'." , nodeParticipants.get(0).getName(), nodeParticipants.get(1).getName()));
         }
@@ -73,9 +78,13 @@ public class FinalsTreeNodeService {
             newNodeParticipants.add(nodeParticipants.get(1));
             newNodeParticipants.add(nodeParticipants.get(2));
 
+            fightRepo.save(node.getFight());
+            finalsTreeNodeRepo.save(node);
+
             node.setFirstChildNode(new FinalsTreeNodeEntity());
             setUpTree(node.getFirstChildNode(), newNodeParticipants);
 
+            fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node.getFirstChildNode());
             finalsTreeNodeRepo.save(node);
             log.info(String.format("Set up awaiting elimination fight for '%s'." , nodeParticipants.get(0).getName()));
@@ -92,10 +101,12 @@ public class FinalsTreeNodeService {
             }
 
             node.setFirstChildNode(new FinalsTreeNodeEntity());
+            finalsTreeNodeRepo.save(node.getFirstChildNode());
             setUpTree(node.getFirstChildNode(), firstChildNodeParticipants);
             finalsTreeNodeRepo.save(node.getFirstChildNode());
 
             node.setSecondChildNode(new FinalsTreeNodeEntity());
+            finalsTreeNodeRepo.save(node.getFirstChildNode());
             setUpTree(node.getSecondChildNode(), secondChildNodeParticipants);
             finalsTreeNodeRepo.save(node.getSecondChildNode());
 

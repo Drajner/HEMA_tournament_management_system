@@ -36,17 +36,20 @@ public class GroupEntity {
     public GroupEntity(){
         groupParticipants = new ArrayList<>();
         groupFights = new ArrayList<>();
+        modifier = 1;
     }
 
     public GroupEntity(ArrayList<TournamentParticipantEntity> groupParticipants){
         this.groupParticipants = groupParticipants;
         this.groupFights = new ArrayList<>();
+        modifier = 1;
     }
 
     public GroupEntity(TournamentEntity tournament){
         this.tournament = tournament;
         this.groupParticipants = new ArrayList<>();
         this.groupFights = new ArrayList<>();
+        modifier = 1;
     }
 
 }

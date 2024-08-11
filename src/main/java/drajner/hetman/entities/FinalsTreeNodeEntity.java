@@ -20,17 +20,16 @@ public class FinalsTreeNodeEntity {
     @JoinColumn(name="fightId")
     FightEntity fight;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="firstChildNodeId")
     FinalsTreeNodeEntity firstChildNode;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="secondChildNodeId")
     FinalsTreeNodeEntity secondChildNode;
 
-    public FinalsTreeNodeEntity(){this.fight = new FightEntity();}
+    public FinalsTreeNodeEntity(){}
     public FinalsTreeNodeEntity(boolean reverted){
-        this.fight = new FightEntity();
         this.reverted = reverted;
     }
 }

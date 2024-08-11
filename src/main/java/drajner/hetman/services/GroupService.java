@@ -4,17 +4,20 @@ import drajner.hetman.entities.GroupEntity;
 import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.errors.DuplicateException;
+import drajner.hetman.errors.ImpossibleFightException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
 import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.repositories.GroupRepo;
 import drajner.hetman.entities.FightEntity;
 import drajner.hetman.repositories.TournamentParticipantsRepo;
+import drajner.hetman.requests.AddFightRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -84,13 +87,20 @@ public class GroupService {
         log.info("Evaluated group.");
     }
 
-    public void addFight(Long groupId, FightEntity fight){
+    public void addFight(Long groupId, AddFightRequest addFightRequest) throws ImpossibleFightException{
 
         GroupEntity selectedGroup = searchForGroup(groupId);
+        List<TournamentParticipantEntity> groupParticipants =  selectedGroup.getGroupParticipants();
+        TournamentParticipantEntity firstParticipant = participantService.searchForParticipant(addFightRequest.getFirstParticipantId());
+        TournamentParticipantEntity secondParticipant = participantService.searchForParticipant(addFightRequest.getSecondParticipantId());
+        if(!(groupParticipants.contains(firstParticipant) && groupParticipants.contains(secondParticipant))) throw new ImpossibleFightException("Two participants are not in this group.");
 
-        selectedGroup.getGroupFights().add(fight);
+        FightEntity createdFight = new FightEntity(firstParticipant, secondParticipant);
+        createdFight.setGroup(selectedGroup);
+        fightRepo.save(createdFight);
+        selectedGroup.getGroupFights().add(createdFight);
         groupRepo.save(selectedGroup);
-        log.info(String.format("Added fight between '%s' and '%s' to group.", fight.getFirstParticipant().getName(), fight.getSecondParticipant().getName()));
+        log.info(String.format("Added fight between '%s' and '%s' to group.", createdFight.getFirstParticipant().getName(), createdFight.getSecondParticipant().getName()));
     }
 
     public void addParticipant(Long groupId, Long participantsId) throws DuplicateException{

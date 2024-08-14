@@ -31,6 +31,7 @@ public class TournamentController {
         try {
             return ResponseEntity.ok(tournamentRepo.findAll());
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -42,6 +43,7 @@ public class TournamentController {
             TournamentEntity newTournament = new TournamentEntity(name);
             return ResponseEntity.ok(tournamentRepo.save(newTournament));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -55,6 +57,7 @@ public class TournamentController {
             tournamentRepo.deleteById(tournamentId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -68,10 +71,12 @@ public class TournamentController {
             editedTournament.setName(tournamentName);
             return ResponseEntity.ok(tournamentRepo.save(editedTournament));
         }catch(NoSuchElementException e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
         catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -94,7 +99,7 @@ public class TournamentController {
     }
 
     @PostMapping("/generateLadder/{tournamentId}")
-    public ResponseEntity<Object> generateLadder(@RequestBody int numberOfParticipants, @PathVariable Long tournamentId) throws WrongAmountException, OneFinalsException {
+    public ResponseEntity<Object> generateLadder(@RequestBody int numberOfParticipants, @PathVariable Long tournamentId){
         try {
             tournamentService.createLadder(tournamentId, numberOfParticipants);
             return ResponseEntity.ok().build();
@@ -114,6 +119,7 @@ public class TournamentController {
         try {
             return ResponseEntity.ok(tournamentService.getFinals(tournamentId));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -125,6 +131,7 @@ public class TournamentController {
             tournamentService.addGroupPool(tournamentId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -136,6 +143,7 @@ public class TournamentController {
             tournamentService.evaluateFinals(tournamentId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -148,6 +156,7 @@ public class TournamentController {
             tournamentService.purgeFinals(tournamentId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }

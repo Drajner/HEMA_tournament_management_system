@@ -29,6 +29,7 @@ public class ParticipantController {
         try{
             return ResponseEntity.ok(tournamentParticipantsRepo.findByTournamentTournamentId(tournamentId));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -38,6 +39,7 @@ public class ParticipantController {
         try{
             return ResponseEntity.ok(tournamentParticipantsRepo.findByGroupParticipationsGroupId(groupId));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -48,6 +50,7 @@ public class ParticipantController {
             tournamentService.addParticipant(tournamentId, person);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -58,6 +61,7 @@ public class ParticipantController {
             tournamentService.removeParticipant(participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -68,6 +72,7 @@ public class ParticipantController {
             tournamentService.replaceParticipant(participant);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -78,6 +83,7 @@ public class ParticipantController {
             participantService.disqualify(participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -88,6 +94,7 @@ public class ParticipantController {
             participantService.compete(participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -98,6 +105,7 @@ public class ParticipantController {
             participantService.eliminate(participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }

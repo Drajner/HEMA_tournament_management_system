@@ -27,6 +27,7 @@ public class GroupController {
         try {
             return ResponseEntity.ok(groupRepo.findByTournamentTournamentId(tournamentId));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -38,6 +39,7 @@ public class GroupController {
             groupService.deleteGroup(groupId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -48,6 +50,7 @@ public class GroupController {
             groupService.setModifier(tournamentId, newModifier);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -59,9 +62,11 @@ public class GroupController {
             groupService.autoGenerateFights(groupId);
             return ResponseEntity.ok().build();
         }catch(WrongAmountException e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -72,6 +77,7 @@ public class GroupController {
             groupService.evaluateGroup(groupId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -82,6 +88,7 @@ public class GroupController {
             groupService.addFight(groupId, addFightRequest);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -92,6 +99,7 @@ public class GroupController {
             groupService.addParticipant(groupId, participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }
@@ -103,6 +111,7 @@ public class GroupController {
             groupService.deleteParticipant(groupId, participantId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
 

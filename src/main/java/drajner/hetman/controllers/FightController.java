@@ -26,6 +26,7 @@ public class FightController {
         try {
             return ResponseEntity.ok(fightRepo.findByGroupGroupId(groupId));
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -37,6 +38,7 @@ public class FightController {
             fightService.deleteFight(fightId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
@@ -49,6 +51,7 @@ public class FightController {
             fightService.replaceFight(fightId, fight);
             return ResponseEntity.ok().build();
         }catch(Exception e){
+            log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);        }
     }

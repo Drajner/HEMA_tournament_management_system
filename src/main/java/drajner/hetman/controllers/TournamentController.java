@@ -144,15 +144,12 @@ public class TournamentController {
     @DeleteMapping("/purgeFinals/{tournamentId}")
     public ResponseEntity<Object> purgeFinals(@PathVariable Long tournamentId)
     {
-        //try {
+        try {
             tournamentService.purgeFinals(tournamentId);
             return ResponseEntity.ok().build();
-        /*}catch(Exception e){
+        }catch(Exception e){
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
-
-         */
-
     }
 }

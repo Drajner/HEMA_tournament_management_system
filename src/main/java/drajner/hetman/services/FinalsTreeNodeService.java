@@ -40,7 +40,7 @@ public class FinalsTreeNodeService {
                     fillNode(selectedNode.getFirstChildNode());
                     if (firstChildNode.getFight().getStatus() == FightStatus.FINISHED || firstChildNode.getFight().getStatus() == FightStatus.EVALUATED) {
                         fightService.evaluateFight(firstChildNode.getFight(), 1);
-                        if (!selectedNode.isReverted()) selectedNode.getFight().setFirstParticipant(firstChildNode.getFight().findLoser());
+                        if (selectedNode.isReverted()) selectedNode.getFight().setFirstParticipant(firstChildNode.getFight().findLoser());
                         else selectedNode.getFight().setFirstParticipant(firstChildNode.getFight().getWinner());
                     }
 
@@ -52,7 +52,7 @@ public class FinalsTreeNodeService {
                     fillNode(selectedNode.getSecondChildNode());
                     if (secondChildNode.getFight().getStatus() == FightStatus.FINISHED || secondChildNode.getFight().getStatus() == FightStatus.EVALUATED) {
                         fightService.evaluateFight(secondChildNode.getFight(), 1);
-                        if (!selectedNode.isReverted()) selectedNode.getFight().setSecondParticipant(secondChildNode.getFight().findLoser());
+                        if (selectedNode.isReverted()) selectedNode.getFight().setSecondParticipant(secondChildNode.getFight().findLoser());
                         else selectedNode.getFight().setSecondParticipant(secondChildNode.getFight().getWinner());
                     }
 

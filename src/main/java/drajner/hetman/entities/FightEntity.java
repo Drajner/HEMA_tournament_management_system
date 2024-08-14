@@ -92,7 +92,7 @@ public class FightEntity {
     }
 
     public TournamentParticipantEntity findLoser() throws UnfinishedFightException {
-        if(!(status == FightStatus.FINISHED)){
+        if(status == FightStatus.PENDING){
             throw new UnfinishedFightException("Fight is not yet finished");
         }
         if(winner == firstParticipant) return secondParticipant;

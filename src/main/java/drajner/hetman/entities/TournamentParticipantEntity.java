@@ -82,7 +82,7 @@ public class TournamentParticipantEntity {
     public void eliminate(){this.status = CompetitorStatus.ELIMINATED;}
 
     public void addDoubles(float doubles){
-        this.doubles = doubles;
+        this.doubles += doubles;
     }
 
     public void addCards(int cards){

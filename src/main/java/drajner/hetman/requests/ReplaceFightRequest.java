@@ -1,9 +1,11 @@
 package drajner.hetman.requests;
 
+import drajner.hetman.services.FightStatus;
 import lombok.Getter;
 
 @Getter
-public class FightDetails {
+public class ReplaceFightRequest {
+
     Long fightId;
     Long firstParticipantId;
     Long secondParticipantId;
@@ -12,5 +14,7 @@ public class FightDetails {
     int firstParticipantCards;
     int secondParticipantCards;
     int doubles;
+    FightStatus status;
     Long winner;
+
 }

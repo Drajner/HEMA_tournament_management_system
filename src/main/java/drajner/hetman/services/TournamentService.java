@@ -1,16 +1,10 @@
 package drajner.hetman.services;
 
-import drajner.hetman.entities.FinalsTreeNodeEntity;
-import drajner.hetman.entities.GroupEntity;
-import drajner.hetman.entities.TournamentEntity;
-import drajner.hetman.entities.TournamentParticipantEntity;
+import drajner.hetman.entities.*;
 import drajner.hetman.errors.OneFinalsException;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.errors.WrongAmountException;
-import drajner.hetman.repositories.FinalsTreeNodeRepo;
-import drajner.hetman.repositories.GroupRepo;
-import drajner.hetman.repositories.TournamentParticipantsRepo;
-import drajner.hetman.repositories.TournamentRepo;
+import drajner.hetman.repositories.*;
 import drajner.hetman.requests.Person;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +23,8 @@ public class TournamentService {
     TournamentParticipantsRepo tournamentParticipantsRepo;
     @Autowired
     GroupRepo groupRepo;
+    @Autowired
+    FightRepo fightRepo;
     @Autowired
     FinalsTreeNodeRepo finalsTreeNodeRepo;
     @Autowired
@@ -80,12 +76,23 @@ public class TournamentService {
         tournamentRepo.save(selectedTournament);
     }
 
-    public void sortParticipants(TournamentEntity selectedTournament){
-        Collections.sort(selectedTournament.getParticipants(), Comparator
+    public List<TournamentParticipantEntity> sortParticipants(TournamentEntity selectedTournament){
+
+        List<TournamentParticipantEntity> sortedParticipants = selectedTournament.getParticipants();
+
+        /*
+        Collections.sort(sortedParticipants, Comparator
                 .comparing(TournamentParticipantEntity::getWins)
                 .thenComparing(TournamentParticipantEntity::getScore)
                 .thenComparing(Comparator.comparingDouble(TournamentParticipantEntity::getDoubles).reversed())
                 .thenComparing(Comparator.comparingDouble(TournamentParticipantEntity::getCards).reversed()));
+
+         */
+
+        Collections.sort(sortedParticipants, Comparator.comparingDouble(TournamentParticipantEntity::getWins).reversed()
+                .thenComparing(Comparator.comparingDouble(TournamentParticipantEntity::getScore).reversed())
+                .thenComparing(TournamentParticipantEntity::getDoubles)
+                .thenComparing(TournamentParticipantEntity::getCards));
 
         int rankingPosition = 1;
         for (TournamentParticipantEntity participant: selectedTournament.getParticipants()) {
@@ -95,6 +102,7 @@ public class TournamentService {
         }
 
         log.info(String.format("%s tournament participants list is sorted.", selectedTournament.getName()));
+        return sortedParticipants;
     }
 
     public List<TournamentParticipantEntity> getGroupWinners(TournamentEntity selectedTournament, int winnersNumber) throws WrongAmountException{
@@ -102,14 +110,14 @@ public class TournamentService {
         if(winnersNumber > selectedTournament.getParticipants().size()) throw new WrongAmountException("Ladder to big for this tournament");
         if(winnersNumber < 4) throw new WrongAmountException("Ladder too small");
 
-        sortParticipants(selectedTournament);
-
+        List<TournamentParticipantEntity> sortedParticipants = sortParticipants(selectedTournament);
         ArrayList<TournamentParticipantEntity> groupWinners = new ArrayList<>();
+
         int arrayIterator = 0;
         for(int i=0; i<winnersNumber;i++){
 
-            if(selectedTournament.getParticipants().get(i).getStatus() != CompetitorStatus.DISQUALIFIED){
-                groupWinners.add(selectedTournament.getParticipants().get(arrayIterator));
+            if(sortedParticipants.get(i).getStatus() != CompetitorStatus.DISQUALIFIED){
+                groupWinners.add(sortedParticipants.get(arrayIterator));
             }else{
                 i--;
             }
@@ -123,7 +131,7 @@ public class TournamentService {
         if(size < 4) throw new WrongAmountException("There need to be 4 or more participants in finals");
 
         TournamentEntity selectedTournament = searchForTournament(tournamentId);
-        if(selectedTournament.getFinalFight() == null) throw new OneFinalsException("Ladder is already created. You need to clear existing ladder to create new one.");
+        if(selectedTournament.getFinalFight() != null) throw new OneFinalsException("Ladder is already created. You need to clear existing ladder to create new one.");
 
         List<TournamentParticipantEntity> groupWinners = getGroupWinners(selectedTournament, size);
 
@@ -139,6 +147,8 @@ public class TournamentService {
 
         selectedTournament.getThirdPlaceFight().setFirstChildNode(selectedTournament.getFinalFight().getFirstChildNode());
         selectedTournament.getThirdPlaceFight().setSecondChildNode(selectedTournament.getFinalFight().getSecondChildNode());
+        selectedTournament.getThirdPlaceFight().setFight(new FightEntity());
+        fightRepo.save(selectedTournament.getThirdPlaceFight().getFight());
         finalsTreeNodeRepo.save(selectedTournament.getThirdPlaceFight());
 
         tournamentRepo.save(selectedTournament);
@@ -182,10 +192,14 @@ public class TournamentService {
                 }
             }
         }
+        float defaultModifierDivisor = newGroups.get(0).getGroupParticipants().size();
         for(TournamentParticipantEntity tp: selectedTournament.getParticipants()){
             tournamentParticipantsRepo.save(tp);
         }
+        float newModifier;
         for(GroupEntity group: newGroups){
+            newModifier = defaultModifierDivisor / group.getGroupParticipants().size();
+            group.setModifier(newModifier);
             group.setTournament(selectedTournament);
             tournamentRepo.save(selectedTournament);
             groupRepo.save(group);
@@ -201,5 +215,18 @@ public class TournamentService {
         finalsNodes.add(selectedTournament.getFinalFight());
         finalsNodes.add(selectedTournament.getThirdPlaceFight());
         return finalsNodes;
+    }
+
+    public void purgeFinals(Long tournamentId){
+        TournamentEntity selectedTournament = searchForTournament(tournamentId);
+        FinalsTreeNodeEntity finalFight = selectedTournament.getFinalFight();
+        FinalsTreeNodeEntity thirdPlaceFight = selectedTournament.getThirdPlaceFight();
+        selectedTournament.setFinalFight(null);
+        selectedTournament.setThirdPlaceFight(null);
+        tournamentRepo.save(selectedTournament);
+        finalsTreeNodeService.purgeFights(finalFight);
+        finalsTreeNodeService.purgeFights(thirdPlaceFight);
+        finalsTreeNodeService.purgeTree(finalFight);
+        finalsTreeNodeService.purgeTree(thirdPlaceFight);
     }
 }

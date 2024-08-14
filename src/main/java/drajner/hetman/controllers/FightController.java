@@ -3,6 +3,7 @@ package drajner.hetman.controllers;
 import drajner.hetman.entities.FightEntity;
 import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.requests.ErrorResponse;
+import drajner.hetman.requests.ReplaceFightRequest;
 import drajner.hetman.services.FightService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class FightController {
     }
 
     @PostMapping("replace/{fightId}")
-    public ResponseEntity<Object> replaceFight(@RequestBody FightEntity fight, @PathVariable Long fightId){
+    public ResponseEntity<Object> replaceFight(@RequestBody ReplaceFightRequest fight, @PathVariable Long fightId){
 
         try {
             fightService.replaceFight(fightId, fight);

@@ -6,6 +6,7 @@ import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.repositories.TournamentParticipantsRepo;
 import drajner.hetman.entities.TournamentParticipantEntity;
+import drajner.hetman.requests.ReplaceFightRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class FightService {
 
     @Autowired
     TournamentParticipantsRepo tournamentParticipantsRepo;
+
+    @Autowired
+    ParticipantService participantService;
 
     public FightEntity searchForFight(Long fightId){
         Optional<FightEntity> search = fightRepo.findById(fightId);
@@ -68,17 +72,21 @@ public class FightService {
         log.info(String.format("Scores added to '%s' ranking.", participant.getName()));
     }
 
-    public void replaceFight(Long fightId, FightEntity fight){
+    public void replaceFight(Long fightId, ReplaceFightRequest fight){
 
+        TournamentParticipantEntity firstParticipant = participantService.searchForParticipant(fight.getFirstParticipantId());
+        TournamentParticipantEntity secondParticipant = participantService.searchForParticipant(fight.getSecondParticipantId());
+        TournamentParticipantEntity winner = participantService.searchForParticipant(fight.getWinner());
         FightEntity editedFight = searchForFight(fightId);
-        editedFight.setFirstParticipant(fight.getFirstParticipant());
-        editedFight.setSecondParticipant(fight.getSecondParticipant());
+        editedFight.setFirstParticipant(firstParticipant);
+        editedFight.setSecondParticipant(secondParticipant);
         editedFight.setFirstParticipantPoints(fight.getFirstParticipantPoints());
         editedFight.setSecondParticipantPoints(fight.getSecondParticipantPoints());
         editedFight.setFirstParticipantCards(fight.getFirstParticipantCards());
         editedFight.setSecondParticipantCards(fight.getSecondParticipantCards());
         editedFight.setDoubles(fight.getDoubles());
         editedFight.setStatus(fight.getStatus());
+        editedFight.setWinner(winner);
         fightRepo.save(editedFight);
         log.info(String.format("Editied fight '%s'.", fightId));
     }

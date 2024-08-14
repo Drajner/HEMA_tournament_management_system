@@ -1,7 +1,6 @@
 package drajner.hetman.controllers;
 
 import drajner.hetman.services.ReportsService;
-import drajner.hetman.services.ReportsSingleton;
 import drajner.hetman.errors.NotPendingException;
 import drajner.hetman.errors.ReportMismatchException;
 import drajner.hetman.requests.FightReport;
@@ -9,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

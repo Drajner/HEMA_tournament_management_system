@@ -42,6 +42,17 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);        }
     }
 
+    @PostMapping("setModifier/{groupId}")
+    public ResponseEntity<Object> setModifier(@RequestBody float newModifier, @PathVariable Long tournamentId){
+        try {
+            groupService.setModifier(tournamentId, newModifier);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     @PostMapping("autoGenerateFights/{groupId}")
     public ResponseEntity<Object> autoGenerateFights(@PathVariable Long groupId) throws WrongAmountException {
         try {
@@ -58,7 +69,7 @@ public class GroupController {
     @PostMapping("evaluateGroup/{groupId}")
     public ResponseEntity<Object> evaluateGroup(@PathVariable Long groupId){
         try {
-            groupService.evaluateGroup(groupId, 1); //rework modifier later
+            groupService.evaluateGroup(groupId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());

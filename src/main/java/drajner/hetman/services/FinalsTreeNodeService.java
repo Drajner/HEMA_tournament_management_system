@@ -110,9 +110,30 @@ public class FinalsTreeNodeService {
             setUpTree(node.getSecondChildNode(), secondChildNodeParticipants);
             finalsTreeNodeRepo.save(node.getSecondChildNode());
 
+            node.setFight(new FightEntity());
+            fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node);
 
             log.info(String.format("Set up node for '%s' people.", nodeParticipants.size()));
+        }
+    }
+
+    public void purgeTree(FinalsTreeNodeEntity node){
+        finalsTreeNodeRepo.deleteById(node.getNodeId());
+    }
+    public void purgeFights(FinalsTreeNodeEntity node){
+        FinalsTreeNodeEntity firstChildNode = node.getFirstChildNode();
+        FinalsTreeNodeEntity secondChildNode = node.getSecondChildNode();
+        Long fightId = node.getFight().getId();
+        node.setFight(null);
+        finalsTreeNodeRepo.save(node);
+        fightRepo.deleteById(fightId);
+
+        if(firstChildNode != null){
+            if(firstChildNode.getFight() != null) purgeFights(node.getFirstChildNode());
+        }
+        if(secondChildNode != null){
+            if(secondChildNode.getFight() != null) purgeFights(node.getSecondChildNode());
         }
     }
 }

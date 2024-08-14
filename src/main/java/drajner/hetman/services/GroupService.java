@@ -69,9 +69,10 @@ public class GroupService {
         }
     }
 
-    public void evaluateGroup(Long groupId, float modifier) throws UnfinishedFightException {
+    public void evaluateGroup(Long groupId) throws UnfinishedFightException {
 
         GroupEntity selectedGroup = searchForGroup(groupId);
+        float modifier = selectedGroup.getModifier();
 
         log.info("Evaluating group.");
         for(FightEntity fight: selectedGroup.getGroupFights()){
@@ -146,6 +147,10 @@ public class GroupService {
         groupRepo.deleteById(groupId);
     }
 
-
+    public void setModifier(Long groupId, float newModifier){
+        GroupEntity group = searchForGroup(groupId);
+        group.setModifier(newModifier);
+        groupRepo.save(group);
+    }
 
 }

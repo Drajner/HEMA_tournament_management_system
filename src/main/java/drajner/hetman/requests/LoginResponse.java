@@ -1,12 +1,9 @@
 package drajner.hetman.requests;
 
 public class LoginResponse {
-    public LoginResponse(boolean status, String sessionId)
+    public LoginResponse(String token)
     {
-        this.status = status;
-        this.sessionId = sessionId;
+        this.token = token;
     }
-
-    public boolean status;
-    public String sessionId;
+    public String token;
 }

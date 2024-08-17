@@ -1,7 +1,18 @@
 package drajner.hetman.services;
 
 public enum UserStatus {
-    STANDARD,
-    ADMIN,
-    BANNED
+    STANDARD("STANDARD"),
+    ADMIN("ADMIN"),
+    BANNED("BANNED");
+
+    private final String text;
+
+    UserStatus(String text){
+        this.text = text;
+    }
+
+    @Override
+    public String toString(){
+        return text;
+    }
 }

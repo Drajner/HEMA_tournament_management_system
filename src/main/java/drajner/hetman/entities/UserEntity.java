@@ -1,9 +1,7 @@
 package drajner.hetman.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import drajner.hetman.services.UserStatus;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,22 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserEntity {
-    public UserEntity() { }
-
-    public UserEntity(Long userId, String username, String password, boolean isAdmin)
-    {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.isAdmin = isAdmin;
-    }
-
-    public UserEntity(String username, String password)
-    {
-        this.username = username;
-        this.password = password;
-        this.isAdmin = false;
-    }
 
     @Id
     @GeneratedValue
@@ -35,5 +17,22 @@ public class UserEntity {
     private String username;
     private String password;
 
-    boolean isAdmin;
+    @Enumerated(EnumType.ORDINAL)
+    UserStatus userStatus;
+
+    public UserEntity() { }
+
+    public UserEntity(String username, String password, UserStatus userStatus)
+    {
+        this.username = username;
+        this.password = password;
+        this.userStatus = userStatus;
+    }
+
+    public UserEntity(String username, String password)
+    {
+        this.username = username;
+        this.password = password;
+        this.userStatus = UserStatus.STANDARD;
+    }
 }

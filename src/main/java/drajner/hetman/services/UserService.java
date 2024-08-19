@@ -7,6 +7,7 @@ import drajner.hetman.repositories.UserRepo;
 import drajner.hetman.requests.RegisterRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     UserRepo userRepo;
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserEntity searchForUser(String username){
         Optional<UserEntity> selectedUser = userRepo.findByUsername(username);

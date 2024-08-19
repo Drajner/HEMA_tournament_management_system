@@ -53,7 +53,7 @@ public class TokenUtils {
 
     public static boolean validate(String token, UserEntity userEntity) throws AccessDeniedException{
         String username = getUsername(token);
-        return username.equals(userEntity.getUsername()) && isExpired(token);
+        return username.equals(userEntity.getUsername()) && !isExpired(token);
     }
 
 }

@@ -2,6 +2,7 @@ package drajner.hetman.controllers;
 
 
 import drajner.hetman.entities.UserEntity;
+import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.repositories.SessionRepo;
 import drajner.hetman.repositories.UserRepo;
 import drajner.hetman.requests.*;
@@ -12,15 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;
 
-@RestController("/users")
+@RestController
+@RequestMapping("/users")
 @Log4j2
 public class UserController {
 
@@ -74,16 +73,18 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody RegisterRequest registerRequest)
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest registerRequest) throws DuplicateException
     {
-        try {
+        //try {
             userService.register(registerRequest);
             return ResponseEntity.ok().build();
-        }catch(Exception e){
+        /*}catch(Exception e){
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
+
+         */
     }
 
     private String generateToken()

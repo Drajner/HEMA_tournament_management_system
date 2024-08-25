@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
 @RequestMapping("/users")
 @Log4j2
 public class UserController {

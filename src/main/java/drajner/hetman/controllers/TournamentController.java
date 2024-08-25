@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
 @RequestMapping("tournaments")
 @Log4j2
 public class TournamentController {

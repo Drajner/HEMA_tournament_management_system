@@ -5,11 +5,11 @@ import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.errors.NotPendingException;
 import drajner.hetman.errors.ReportMismatchException;
 import drajner.hetman.requests.FightReport;
+import drajner.hetman.status.FightStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,10 +31,13 @@ public class ReportsService {
 
     public void addReport(FightReport fightReport){
         reportsList.add(fightReport);
+        log.info(String.format("Added report for fight '%s' by '%s'",
+                                fightReport.getFightId(), fightReport.getUsername()));
     }
 
     public void removeReport(int number){
         reportsList.remove(number);
+        log.info(String.format("Removed report number '%s'", number));
     }
 
     public void acceptReport(int number) throws ReportMismatchException, NotPendingException {
@@ -56,5 +59,7 @@ public class ReportsService {
         savedFight.setStatus(FightStatus.FINISHED);
         fightService.saveFight(savedFight);
         reportsList.remove(number);
+        log.info(String.format("Accepted report about fight '%s' by '%s'. Fight is FINISHED.",
+                                savedFight.getId(), acceptedReport.getUsername()));
     }
 }

@@ -1,6 +1,6 @@
 package drajner.hetman.requests;
 
-import drajner.hetman.services.FightStatus;
+import drajner.hetman.status.FightStatus;
 import lombok.Getter;
 
 @Getter

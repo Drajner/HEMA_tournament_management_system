@@ -1,4 +1,4 @@
-package drajner.hetman.services;
+package drajner.hetman.status;
 
 public enum UserStatus {
     STANDARD("STANDARD"),

@@ -2,7 +2,7 @@ package drajner.hetman.config;
 
 import drajner.hetman.entities.UserEntity;
 import drajner.hetman.repositories.UserRepo;
-import drajner.hetman.services.UserStatus;
+import drajner.hetman.status.UserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

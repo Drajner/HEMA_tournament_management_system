@@ -22,6 +22,7 @@ public class UserService {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserEntity searchForUser(String username){
+        log.info(String.format("Searching for user of username: '%s'", username));
         Optional<UserEntity> selectedUser = userRepo.findByUsername(username);
         if (selectedUser.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
         return selectedUser.get();
@@ -35,5 +36,6 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         UserEntity user = new UserEntity(registerRequest.getUsername(), hashedPassword);
         userRepo.save(user);
+        log.info(String.format("Registered user %s", user.getUsername()));
     }
 }

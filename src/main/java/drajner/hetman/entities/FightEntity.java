@@ -1,9 +1,8 @@
 package drajner.hetman.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import drajner.hetman.errors.UnfinishedFightException;
-import drajner.hetman.services.FightStatus;
+import drajner.hetman.status.FightStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

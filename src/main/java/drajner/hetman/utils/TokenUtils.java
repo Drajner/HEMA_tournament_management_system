@@ -1,4 +1,4 @@
-package drajner.hetman.services;
+package drajner.hetman.utils;
 
 import drajner.hetman.entities.UserEntity;
 import io.jsonwebtoken.Claims;

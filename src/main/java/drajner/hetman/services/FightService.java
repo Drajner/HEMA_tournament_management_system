@@ -1,12 +1,12 @@
 package drajner.hetman.services;
 
 import drajner.hetman.entities.FightEntity;
-import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.repositories.TournamentParticipantsRepo;
 import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.requests.ReplaceFightRequest;
+import drajner.hetman.status.FightStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ public class FightService {
     ParticipantService participantService;
 
     public FightEntity searchForFight(Long fightId){
+        log.info(String.format("Searching for fight of id: '%s'", fightId));
         Optional<FightEntity> search = fightRepo.findById(fightId);
         if (search.isEmpty()) throw new NoSuchElementException("No fight of this ID exists");
         return search.get();
@@ -56,7 +57,10 @@ public class FightService {
             }
             fight.setStatus(FightStatus.EVALUATED);
             fightRepo.save(fight);
-            log.info(String.format("Evaluated fight between '%s' and '%s'.", fight.getFirstParticipant().getName(), fight.getSecondParticipant().getName()));
+            log.info(String.format("Evaluated fight between '%s' and '%s'. Fight id: '%s'",
+                                    fight.getFirstParticipant().getName(),
+                                    fight.getSecondParticipant().getName(),
+                                    fight.getId()));
         }else if(fight.getStatus() == FightStatus.PENDING){
             throw new UnfinishedFightException("This fight is not yet finished!");
         }
@@ -69,7 +73,9 @@ public class FightService {
         participant.addDoubles(doubles);
         participant.addCards(cards);
         tournamentParticipantsRepo.save(participant);
-        log.info(String.format("Scores added to '%s' ranking.", participant.getName()));
+        log.info(String.format("Scores added to '%s' ranking. Participant id: '%s'",
+                                participant.getName(),
+                                participant.getParticipantId()));
     }
 
     public void replaceFight(Long fightId, ReplaceFightRequest fight){
@@ -92,9 +98,7 @@ public class FightService {
     }
 
     public void deleteFight(Long fightId){
-
         fightRepo.deleteById(fightId);
-
         log.info(String.format("Removing '%s' fight.", fightId));
     }
 

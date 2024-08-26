@@ -2,19 +2,17 @@ package drajner.hetman.services;
 
 import drajner.hetman.entities.FightEntity;
 import drajner.hetman.entities.FinalsTreeNodeEntity;
-import drajner.hetman.entities.TournamentEntity;
 import drajner.hetman.entities.TournamentParticipantEntity;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.repositories.FightRepo;
 import drajner.hetman.repositories.FinalsTreeNodeRepo;
+import drajner.hetman.status.FightStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Log4j2
@@ -46,7 +44,6 @@ public class FinalsTreeNodeService {
 
                 }
 
-
                 if(selectedNode.getSecondChildNode() != null){
                     FinalsTreeNodeEntity secondChildNode = selectedNode.getSecondChildNode();
                     fillNode(selectedNode.getSecondChildNode());
@@ -70,7 +67,10 @@ public class FinalsTreeNodeService {
             node.setFight(new FightEntity(nodeParticipants.get(0), nodeParticipants.get(1)));
             fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node);
-            log.info(String.format("Set up elimination fight for '%s' and '%s'." , nodeParticipants.get(0).getName(), nodeParticipants.get(1).getName()));
+            log.info(String.format("Set up elimination fight for '%s' and '%s'. Fight id: '%s'" ,
+                                    nodeParticipants.get(0).getName(),
+                                    nodeParticipants.get(1).getName(),
+                                    node.getFight().getId()));
         }
         else if(nodeParticipants.size() == 3){
             node.setFight(new FightEntity(nodeParticipants.get(0)));
@@ -87,7 +87,8 @@ public class FinalsTreeNodeService {
             fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node.getFirstChildNode());
             finalsTreeNodeRepo.save(node);
-            log.info(String.format("Set up awaiting elimination fight for '%s'." , nodeParticipants.get(0).getName()));
+            log.info(String.format("Set up awaiting elimination fight for '%s'. Fight id: '%s'" ,
+                                    nodeParticipants.get(0).getName(), node.getFight().getId()));
         }
         else{
             boolean revert = false;
@@ -114,12 +115,14 @@ public class FinalsTreeNodeService {
             fightRepo.save(node.getFight());
             finalsTreeNodeRepo.save(node);
 
-            log.info(String.format("Set up node for '%s' people.", nodeParticipants.size()));
+            log.info(String.format("Set up node for '%s' people. Empty fight id: '%s'",
+                                    nodeParticipants.size(), node.getFight().getId()));
         }
     }
 
     public void purgeTree(FinalsTreeNodeEntity node){
         finalsTreeNodeRepo.deleteById(node.getNodeId());
+        log.info(String.format("Deleted tree starting from node '%s'", node.getNodeId()));
     }
     public void purgeFights(FinalsTreeNodeEntity node){
         FinalsTreeNodeEntity firstChildNode = node.getFirstChildNode();
@@ -135,5 +138,6 @@ public class FinalsTreeNodeService {
         if(secondChildNode != null){
             if(secondChildNode.getFight() != null) purgeFights(node.getSecondChildNode());
         }
+        log.info(String.format("Purging fight '%s' from node '%s'", fightId, node.getNodeId()));
     }
 }

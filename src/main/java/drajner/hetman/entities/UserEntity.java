@@ -1,6 +1,6 @@
 package drajner.hetman.entities;
 
-import drajner.hetman.services.UserStatus;
+import drajner.hetman.status.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

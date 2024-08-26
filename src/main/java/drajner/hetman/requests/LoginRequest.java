@@ -1,6 +1,6 @@
 package drajner.hetman.requests;
 
-import drajner.hetman.services.UserStatus;
+import drajner.hetman.status.UserStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

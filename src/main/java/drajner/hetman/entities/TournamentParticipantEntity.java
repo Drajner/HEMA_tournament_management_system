@@ -1,8 +1,7 @@
 package drajner.hetman.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import drajner.hetman.services.CompetitorStatus;
+import drajner.hetman.status.CompetitorStatus;
 import drajner.hetman.requests.Person;
 import jakarta.persistence.*;
 import lombok.Getter;

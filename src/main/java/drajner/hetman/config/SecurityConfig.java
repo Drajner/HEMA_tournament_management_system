@@ -1,7 +1,7 @@
 package drajner.hetman.config;
 
 import drajner.hetman.services.UserDetailsServiceImpl;
-import drajner.hetman.services.UserStatus;
+import drajner.hetman.status.UserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig{
 
     @Autowired
@@ -31,27 +31,6 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        /*
-        http.authorizeHttpRequests((authorization) -> authorization
-                .anyRequest().authenticated()).httpBasic(withDefaults());
-
-        http.authorizeRequests()
-                .antMatchers("/", "/public/**").permitAll() // Public endpoints
-                .antMatchers("/admin/**").hasAuthority("ADMIN") // Admin access only
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // User and Admin access
-                .anyRequest().authenticated() // Any other requests must be authenticated
-                .and()
-                .formLogin() // Enable form-based login
-                .loginPage("/login").permitAll()
-                .and()
-                .logout() // Enable logout functionality
-                .permitAll();
-
-
-        return http.build();
-
-         */
-
         return http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
                 .headers(httpSecurityHeadersConfigurer -> {
                     httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);

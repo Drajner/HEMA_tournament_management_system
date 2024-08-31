@@ -2,6 +2,7 @@ package drajner.hetman.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,11 @@ public class GroupEntity {
 
     @OneToMany(mappedBy = "group")
     List<FightEntity> groupFights;
+
+    @JsonProperty("tournamentId")
+    public Long getTournamentId() {
+        return tournament != null ? tournament.getTournamentId() : null;
+    }
 
     float modifier;
 

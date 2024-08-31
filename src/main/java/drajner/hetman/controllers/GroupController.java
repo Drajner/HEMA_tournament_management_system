@@ -34,6 +34,17 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/getOne/{groupId}")
+    public ResponseEntity<Object> getOneGroup(@PathVariable Long groupId){
+        try {
+            return ResponseEntity.ok(groupRepo.findById(groupId));
+        }catch(Exception e){
+            log.error(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     @DeleteMapping("delete/{groupId}")
     public ResponseEntity<Object> deleteGroup(@PathVariable Long groupId){
         try {
@@ -46,9 +57,9 @@ public class GroupController {
     }
 
     @PostMapping("setModifier/{groupId}")
-    public ResponseEntity<Object> setModifier(@RequestBody float newModifier, @PathVariable Long tournamentId){
+    public ResponseEntity<Object> setModifier(@RequestBody float newModifier, @PathVariable Long groupId){
         try {
-            groupService.setModifier(tournamentId, newModifier);
+            groupService.setModifier(groupId, newModifier);
             return ResponseEntity.ok().build();
         }catch(Exception e){
             log.error(e);

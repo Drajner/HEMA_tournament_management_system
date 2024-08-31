@@ -37,7 +37,7 @@ public class SecurityConfig{
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-
+                        /*
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/h2**").permitAll()
@@ -47,6 +47,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET, "/users/getUsers").hasAuthority(UserStatus.ADMIN.toString())
 
                         .requestMatchers(HttpMethod.GET, "/tournaments/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/tournaments/get/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tournaments/add").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.DELETE, "/tournaments/delete/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/tournaments/rename/**").hasAuthority(UserStatus.ADMIN.toString())
@@ -57,6 +58,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/tournaments/purgeFinals/**").hasAuthority(UserStatus.ADMIN.toString())
 
                         .requestMatchers(HttpMethod.GET, "/groups/get/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/groups/getOne/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/groups/delete/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/groups/setModifier/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/groups/autoGenerateFights/**").hasAuthority(UserStatus.ADMIN.toString())
@@ -74,6 +76,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/participants/eliminate/**").hasAuthority(UserStatus.ADMIN.toString())
 
                         .requestMatchers(HttpMethod.GET, "/fights/get/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/fights/getOne/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/fights/replace/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.DELETE, "/fights/delete/**").hasAuthority(UserStatus.ADMIN.toString())
 
@@ -84,7 +87,9 @@ public class SecurityConfig{
 
                         .requestMatchers(HttpMethod.POST, "/error**").permitAll()
 
-                        //.requestMatchers("**").permitAll()    // permission for all endpoints, to use comment above matchers
+                         */
+
+                        .requestMatchers("**").permitAll()    // permission for all endpoints, to use comment above matchers
                         .anyRequest().authenticated())
 
                 .authenticationManager(authenticationManager)

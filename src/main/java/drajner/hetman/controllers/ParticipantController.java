@@ -45,6 +45,16 @@ public class ParticipantController {
             return ResponseEntity.internalServerError().body(response);        }
     }
 
+    @GetMapping("/get/{participantId}")
+    public ResponseEntity<Object> getParticipant(@PathVariable Long participantId){
+        try{
+            return ResponseEntity.ok(tournamentParticipantsRepo.findById(participantId));
+        }catch(Exception e){
+            log.error(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);        }
+    }
+
     @PostMapping("/add/tournament/{tournamentId}")
     public ResponseEntity<Object> addTournamentParticipant(@RequestBody Person person, @PathVariable Long tournamentId){
         try{

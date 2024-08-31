@@ -33,6 +33,17 @@ public class FightController {
         }
     }
 
+    @GetMapping("/getOne/{fightId}")
+    public ResponseEntity<Object> getOneFight(@PathVariable Long fightId){
+        try {
+            return ResponseEntity.ok(fightRepo.findById(fightId));
+        }catch(Exception e){
+            log.error(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     @DeleteMapping("delete/{fightId}")
     public ResponseEntity<Object> deleteFight(@PathVariable Long fightId){
         try {

@@ -38,6 +38,17 @@ public class TournamentController {
         }
     }
 
+    @GetMapping("/get/{tournamentId}")
+    public ResponseEntity<Object> getTournament(@PathVariable Long tournamentId){
+        try {
+            return ResponseEntity.ok(tournamentRepo.findById(tournamentId));
+        }catch(Exception e){
+            log.error(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> addTournament(@RequestBody String name){
         try {

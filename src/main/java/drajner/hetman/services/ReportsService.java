@@ -29,6 +29,8 @@ public class ReportsService {
         return reportsList.getAll();
     }
 
+    public FightReport getReport(int index){ return reportsList.get(index);}
+
     public void addReport(FightReport fightReport){
         reportsList.add(fightReport);
         log.info(String.format("Added report for fight '%s' by '%s'",

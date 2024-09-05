@@ -1,6 +1,7 @@
 package drajner.hetman.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import drajner.hetman.errors.UnfinishedFightException;
 import drajner.hetman.status.FightStatus;
 import jakarta.persistence.*;
@@ -42,6 +43,11 @@ public class FightEntity {
     @ManyToOne
     @JoinColumn(name = "groupId")
     GroupEntity group;
+
+    @JsonProperty("groupId")
+    public Long getGroupId() {
+        return group != null ? group.getGroupId() : null;
+    }
 
     public FightEntity(){
         this.firstParticipant = null;

@@ -7,6 +7,7 @@ import drajner.hetman.services.ReportsService;
 import drajner.hetman.errors.NotPendingException;
 import drajner.hetman.errors.ReportMismatchException;
 import drajner.hetman.requests.FightReport;
+import drajner.hetman.utils.TokenUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,21 @@ public class ReportController {
     ReportsService reportsService;
 
     @PostMapping("/send")
-    public ResponseEntity<Object> sendReport(@RequestBody FightReport fightReport){
+    public ResponseEntity<Object> sendReport(@RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody FightReport fightReport){
         try {
-            reportsService.addReport(fightReport);
-            return ResponseEntity.ok().build();
+            if(authHeader != null && authHeader.startsWith("Bearer ")){
+                String username;
+                authHeader = authHeader.substring(7);
+                username = TokenUtils.getUsername(authHeader);
+                fightReport.setUsername(username);
+                reportsService.addReport(fightReport);
+                return ResponseEntity.ok().build();
+            }
+            else{
+                fightReport.setUsername("UNKNOWN");
+                reportsService.addReport(fightReport);
+                return ResponseEntity.ok().build();
+            }
         }catch(Exception e){
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
@@ -64,6 +76,16 @@ public class ReportController {
     public ResponseEntity<Object> getReports(){
         try {
             return ResponseEntity.ok(reportsService.getReports());
+        }catch(Exception e){
+            log.error(e);
+            ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
+            return ResponseEntity.internalServerError().body(response);        }
+    }
+
+    @GetMapping("/get/{reportNumber}")
+    public ResponseEntity<Object> getReports(@PathVariable int reportNumber){
+        try {
+            return ResponseEntity.ok(reportsService.getReport(reportNumber));
         }catch(Exception e){
             log.error(e);
             ErrorResponse response = new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());

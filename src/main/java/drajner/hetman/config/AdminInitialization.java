@@ -17,10 +17,11 @@ public class AdminInitialization implements ApplicationRunner {
     UserRepo userRepo;
 
     public void run(ApplicationArguments args){
-
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode("admin");
-        UserEntity admin = new UserEntity("admin", encodedPassword, UserStatus.ADMIN);
-        userRepo.save(admin);
+        if(userRepo.findByUsername("admin").isEmpty()) {
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            String encodedPassword = encoder.encode("admin");
+            UserEntity admin = new UserEntity("admin", encodedPassword, UserStatus.ADMIN);
+            userRepo.save(admin);
+        }
     }
 }

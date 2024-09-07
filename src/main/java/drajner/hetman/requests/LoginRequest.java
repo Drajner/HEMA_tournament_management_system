@@ -11,7 +11,7 @@ import lombok.Setter;
 public class LoginRequest {
 
     @NotBlank(message = "Username cannot be empty")
-    @Size(min = 4, max = 20, message = "Username must be 6 to 20 characters long")
+    @Size(min = 4, max = 20, message = "Username must be 4 to 20 characters long")
     private String username;
 
     @NotBlank(message = "Password cannot be empty")

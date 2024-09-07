@@ -37,7 +37,7 @@ public class SecurityConfig{
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        /*
+
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/h2**").permitAll()
@@ -80,14 +80,14 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/fights/replace/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.DELETE, "/fights/delete/**").hasAuthority(UserStatus.ADMIN.toString())
 
-                        .requestMatchers(HttpMethod.GET, "/reports/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reports/get**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/reports/add").hasAnyAuthority(UserStatus.ADMIN.toString(), UserStatus.STANDARD.toString())
                         .requestMatchers(HttpMethod.DELETE, "/reports/delete/**").hasAuthority(UserStatus.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/reports/rename/**").hasAuthority(UserStatus.ADMIN.toString())
 
                         .requestMatchers(HttpMethod.POST, "/error**").permitAll()
 
-                         */
+
 
                         .requestMatchers("**").permitAll()    // permission for all endpoints, to use comment above matchers
                         .anyRequest().authenticated())

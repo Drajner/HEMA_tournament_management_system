@@ -5,6 +5,7 @@ import drajner.hetman.entities.UserEntity;
 import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.repositories.UserRepo;
 import drajner.hetman.requests.RegisterRequest;
+import drajner.hetman.status.UserStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +23,6 @@ public class UserService {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserEntity searchForUser(String username){
-        log.info(String.format("Searching for user of username: '%s'", username));
         Optional<UserEntity> selectedUser = userRepo.findByUsername(username);
         if (selectedUser.isEmpty()) throw new NoSuchElementException("No tournament of this ID exists");
         return selectedUser.get();
@@ -37,5 +37,9 @@ public class UserService {
         UserEntity user = new UserEntity(registerRequest.getUsername(), hashedPassword);
         userRepo.save(user);
         log.info(String.format("Registered user %s", user.getUsername()));
+    }
+
+    public UserStatus getUserStatus(String username){
+        return searchForUser(username).getUserStatus();
     }
 }

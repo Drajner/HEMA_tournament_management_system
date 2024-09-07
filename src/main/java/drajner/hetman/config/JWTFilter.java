@@ -42,7 +42,11 @@ public class JWTFilter extends OncePerRequestFilter {
             String username = null;
             if(header != null && header.startsWith("Bearer ")){
                 token = header.substring(7);
-                username = TokenUtils.getUsername(token);
+                try {
+                    username = TokenUtils.getUsername(token);
+                }catch (Exception e){
+                    filterChain.doFilter(request, response);
+                }
             }
             if(token == null){
                 filterChain.doFilter(request, response);

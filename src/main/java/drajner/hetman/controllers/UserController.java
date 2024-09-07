@@ -4,6 +4,7 @@ package drajner.hetman.controllers;
 import drajner.hetman.errors.DuplicateException;
 import drajner.hetman.repositories.UserRepo;
 import drajner.hetman.requests.*;
+import drajner.hetman.status.UserStatus;
 import drajner.hetman.utils.TokenUtils;
 import drajner.hetman.services.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +31,8 @@ public class UserController {
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         String token = TokenUtils.generateToken(loginRequest.getUsername());
-        return ResponseEntity.ok(new LoginResponse(token));
+        UserStatus userStatus = userService.getUserStatus(loginRequest.getUsername());
+        return ResponseEntity.ok(new LoginResponse(token, userStatus));
     }
 
     @GetMapping("/getUsers")

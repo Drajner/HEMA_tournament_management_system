@@ -9,17 +9,9 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 public class TestController {
 
-    @RequestMapping("/dupa")
-    public Person dupa(){
-        Person p = new Person("Aaa", "Bbb", "PNDU");
-        log.info("dupa");
-        //HetmanLogger.warn("dupa");
-        return p;
-    }
-
     @RequestMapping("/testError")
     public void testError() throws Exception{
-        throw new Exception("dupa");
+        throw new Exception("aaa");
     }
 
 }

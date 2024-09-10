@@ -116,7 +116,7 @@ public class GroupService {
         addParticipant(groupId, participant);
     }
 
-    public void addParticipant(Long groupId, TournamentParticipantEntity participant) throws DuplicateException {
+    public void addParticipant(Long groupId, TournamentParticipantEntity participant){
 
         GroupEntity selectedGroup = searchForGroup(groupId);
 

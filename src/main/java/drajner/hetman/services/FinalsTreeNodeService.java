@@ -32,6 +32,10 @@ public class FinalsTreeNodeService {
 
         if(selectedNode.getFight().getStatus() != FightStatus.EVALUATED) {
             if (selectedNode.getFight().getStatus() == FightStatus.PENDING) {
+                System.out.println(selectedNode.getFirstChildNode().getFight().getStatus());
+                System.out.println(selectedNode.getSecondChildNode().getFight().getStatus());
+                System.out.println(selectedNode.getFirstChildNode() != null);
+                System.out.println(selectedNode.getSecondChildNode() != null);
 
                 if(selectedNode.getFirstChildNode() != null){
                     FinalsTreeNodeEntity firstChildNode = selectedNode.getFirstChildNode();

@@ -2,7 +2,9 @@ package drajner.hetman.requests;
 
 import drajner.hetman.status.FightStatus;
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 public class ReplaceFightRequest {
 
